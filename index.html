@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RGM CSP Payloads — Hexnode UEM Custom Configuration Builder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold shadow-lg transition-all"></div>
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <!-- Brand -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <div class="truncate">
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 truncate">RGM CSP Payloads</h1>
+          <p class="text-[11px] text-slate-500 hidden sm:block">Built exclusively for Hexnode UEM Windows 11 Custom Configurations</p>
+        </div>
+      </div>
+
+      <!-- Platform Badge: Hexnode UEM -->
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+          Hexnode UEM &bull; Windows 11 CSP
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- TOP SECTION: 140 Ready-to-Deploy CSP Payloads Catalog Browser -->
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-bold text-slate-900">140 Ready-to-Deploy Windows 11 CSP Payloads</h2>
+            <span id="catalogCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">140 Payloads Available</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">Search by area or setting name and click <strong>+ Add</strong> to add directly to your Hexnode policy.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="addAllFilteredToProfile()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition">
+            + Add All Filtered
+          </button>
+        </div>
+      </div>
+
+      <!-- Search & Filter Controls -->
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+        <div class="sm:col-span-6">
+          <input id="catalogSearchInput" type="text" oninput="renderCatalog()" placeholder="Search 140 payloads by Area, Name, OMA-URI, or Description (e.g., WindowsAI, Bitlocker, Defender, Sudo)..." class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none" />
+        </div>
+        <div class="sm:col-span-4">
+          <select id="catalogAreaFilter" onchange="renderCatalog()" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none">
+            <option value="ALL">All Core MDM Areas (92 Areas)</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <select id="catalogTypeFilter" onchange="renderCatalog()" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none">
+            <option value="ALL">All Data Types</option>
+            <option value="Integer">Integer</option>
+            <option value="String">String</option>
+            <option value="String (XML file)">String (XML file)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Scrollable 140-Payload Catalog Table -->
+      <div class="border border-slate-200 rounded-xl overflow-hidden">
+        <div class="max-h-72 overflow-y-auto overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead class="bg-slate-100 text-slate-700 font-semibold sticky top-0 z-10 border-b border-slate-200">
+              <tr>
+                <th class="py-2.5 px-3">Core Area</th>
+                <th class="py-2.5 px-3">Name*</th>
+                <th class="py-2.5 px-3">OMA-URI*</th>
+                <th class="py-2.5 px-3">Data Type*</th>
+                <th class="py-2.5 px-3">Default Value*</th>
+                <th class="py-2.5 px-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="catalogTableBody" class="divide-y divide-slate-100 bg-white">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SELECTED PROFILE SETTINGS & GENERATED OUTPUT -->
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <h2 class="text-base font-bold text-slate-900">Selected Profile Settings</h2>
+          <span id="itemCountBadge" class="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">0</span>
+        </div>
+
+        <!-- Output View Tabs -->
+        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs">
+          <button id="viewTabCards" onclick="setOutputView('cards')" class="px-2.5 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm">
+            Hexnode 4-Field Table
+          </button>
+          <button id="viewTabSyncml" onclick="setOutputView('syncml')" class="px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900">
+            Hexnode SyncML XML
+          </button>
+          <button id="viewTabJson" onclick="setOutputView('json')" class="px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900">
+            JSON Payload
+          </button>
+        </div>
+      </div>
+
+      <!-- Profile Name Input -->
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+        <label for="profileNameInput" class="text-xs font-semibold text-slate-700 whitespace-nowrap">Hexnode Policy Name:</label>
+        <input id="profileNameInput" type="text" value="Hexnode-Win11-CSP-Policy" oninput="onProfileNameChange()" placeholder="e.g., Hexnode-Win11-CSP-Policy" class="w-full px-3 py-1.5 rounded-lg text-xs mono bg-white border border-slate-300 focus:border-blue-600 focus:outline-none" />
+      </div>
+
+      <!-- View 1: Simple 4-Field Inline Editable Table / Cards -->
+      <div id="outputCardsView" class="space-y-3 max-h-[540px] overflow-y-auto pr-1">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- View 2 & 3: Code Output (SyncML XML or JSON) -->
+      <div id="outputCodeView" class="hidden space-y-3">
+        <div class="flex items-center justify-between">
+          <span id="codeViewLabel" class="text-xs font-semibold text-slate-600">Hexnode OMA-DM SyncML Payload</span>
+          <button onclick="copyCodeOutput()" class="px-3 py-1 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white">
+            Copy Code
+          </button>
+        </div>
+        <pre id="codeOutputPre" class="p-4 rounded-xl bg-slate-900 text-slate-100 text-xs mono overflow-x-auto max-h-[460px] leading-relaxed whitespace-pre-wrap"></pre>
+      </div>
+
+      <!-- Bottom Export Bar -->
+      <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+        <button onclick="clearProfileItems()" class="text-xs font-medium text-rose-600 hover:underline">
+          Clear All
+        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="copyActiveOutput()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition">
+            Copy Output
+          </button>
+          <button onclick="downloadCsv()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition">
+            Export CSV
+          </button>
+          <button id="primaryExportBtn" onclick="downloadPrimaryArtifact()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition">
+            Download Hexnode SyncML XML
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. EMBEDDED 140 WINDOWS 11 CORE MDM POLICY CSP PAYLOADS
+    // =========================================================================
+    const CSP_LIBRARY = [
+      { area: "AboveLock", name: "AllowActionCenterNotifications", omaUri: "./Device/Vendor/MSFT/Policy/Config/AboveLock/AllowActionCenterNotifications", dataType: "Integer", value: "0", description: "0 = Block notifications above lock; 1 = Allow" },
+      { area: "AboveLock", name: "AllowCortanaAboveLock", omaUri: "./Device/Vendor/MSFT/Policy/Config/AboveLock/AllowCortanaAboveLock", dataType: "Integer", value: "0", description: "0 = Disable Cortana above lock; 1 = Enable" },
+      { area: "Accounts", name: "AllowMicrosoftAccountConnection", omaUri: "./Device/Vendor/MSFT/Policy/Config/Accounts/AllowMicrosoftAccountConnection", dataType: "Integer", value: "0", description: "0 = Block MSA connections; 1 = Allow" },
+      { area: "Accounts", name: "AllowAddingNonMicrosoftAccountsManually", omaUri: "./Device/Vendor/MSFT/Policy/Config/Accounts/AllowAddingNonMicrosoftAccountsManually", dataType: "Integer", value: "0", description: "0 = Block manual non-MS accounts; 1 = Allow" },
+      { area: "Accounts", name: "DomainNames", omaUri: "./Device/Vendor/MSFT/Policy/Config/Accounts/DomainNames", dataType: "String", value: "contoso.com", description: "Comma-separated list of allowed email domains" },
+      { area: "ActiveXControls", name: "ApprovedSites", omaUri: "./User/Vendor/MSFT/Policy/Config/ActiveXControls/ApprovedSites", dataType: "String", value: "https://intranet.contoso.com", description: "Approved URLs for ActiveX controls" },
+      { area: "AppDeviceInventory", name: "AllowAppDeviceInventory", omaUri: "./Device/Vendor/MSFT/Policy/Config/AppDeviceInventory/AllowAppDeviceInventory", dataType: "Integer", value: "1", description: "0 = Disable inventory; 1 = Enable inventory" },
+      { area: "ApplicationDefaults", name: "DefaultAssociationsConfiguration", omaUri: "./Device/Vendor/MSFT/Policy/Config/ApplicationDefaults/DefaultAssociationsConfiguration", dataType: "String (XML file)", value: "<DefaultAssociations><Association ApplicationName=\"Microsoft Edge\" Identifier=\".pdf\" ProgId=\"MSEdgePDF\"/></DefaultAssociations>", description: "XML mapping file extensions to default apps" },
+      { area: "ApplicationManagement", name: "AllowAllTrustedApps", omaUri: "./Device/Vendor/MSFT/Policy/Config/ApplicationManagement/AllowAllTrustedApps", dataType: "Integer", value: "1", description: "0 = Block sideloading; 1 = Allow trusted apps; 65535 = Not configured" },
+      { area: "ApplicationManagement", name: "AllowAppStoreAutoUpdate", omaUri: "./Device/Vendor/MSFT/Policy/Config/ApplicationManagement/AllowAppStoreAutoUpdate", dataType: "Integer", value: "1", description: "0 = Disable Store auto-updates; 1 = Enable" },
+      { area: "ApplicationManagement", name: "AllowDeveloperUnlock", omaUri: "./Device/Vendor/MSFT/Policy/Config/ApplicationManagement/AllowDeveloperUnlock", dataType: "Integer", value: "0", description: "0 = Block Developer Mode; 1 = Allow" },
+      { area: "ApplicationManagement", name: "RestrictAppDataToSystemVolume", omaUri: "./Device/Vendor/MSFT/Policy/Config/ApplicationManagement/RestrictAppDataToSystemVolume", dataType: "Integer", value: "1", description: "0 = Allow any volume; 1 = Restrict app data to OS drive" },
+      { area: "ApplicationManagement", name: "RestrictAppToSystemVolume", omaUri: "./Device/Vendor/MSFT/Policy/Config/ApplicationManagement/RestrictAppToSystemVolume", dataType: "Integer", value: "1", description: "0 = Allow any volume; 1 = Restrict app install to OS drive" },
+      { area: "ApplicationManagement", name: "MSIAllowUserControl", omaUri: "./Device/Vendor/MSFT/Policy/Config/ApplicationManagement/MSIAllowUserControl", dataType: "Integer", value: "0", description: "0 = Block user control over MSI installs; 1 = Allow" },
+      { area: "ApplicationManagement", name: "MSIAlwaysInstallWithElevatedPrivileges", omaUri: "./Device/Vendor/MSFT/Policy/Config/ApplicationManagement/MSIAlwaysInstallWithElevatedPrivileges", dataType: "Integer", value: "0", description: "0 = Disabled (Recommended); 1 = Enabled" },
+      { area: "AppRuntime", name: "AllowMicrosoftAccountsToBeOptional", omaUri: "./Device/Vendor/MSFT/Policy/Config/AppRuntime/AllowMicrosoftAccountsToBeOptional", dataType: "Integer", value: "1", description: "0 = Disabled; 1 = Allow UWP apps to make MSA optional" },
+      { area: "AppVirtualization", name: "AllowAppVClient", omaUri: "./Device/Vendor/MSFT/Policy/Config/AppVirtualization/AllowAppVClient", dataType: "Integer", value: "1", description: "0 = Disable App-V client; 1 = Enable App-V client" },
+      { area: "AttachmentManager", name: "SaveZoneInformation", omaUri: "./User/Vendor/MSFT/Policy/Config/AttachmentManager/SaveZoneInformation", dataType: "Integer", value: "1", description: "1 = Preserve Mark of the Web (MotW); 2 = Do not preserve" },
+      { area: "AttachmentManager", name: "ScanWithAntiVirus", omaUri: "./User/Vendor/MSFT/Policy/Config/AttachmentManager/ScanWithAntiVirus", dataType: "Integer", value: "3", description: "1 = Disabled; 2 = Enabled; 3 = Always scan" },
+      { area: "Audit", name: "AccountManagement_AuditUserAccountManagement", omaUri: "./Device/Vendor/MSFT/Policy/Config/Audit/AccountManagement_AuditUserAccountManagement", dataType: "Integer", value: "3", description: "0 = None; 1 = Success; 2 = Failure; 3 = Success and Failure" },
+      { area: "Audit", name: "LogonLogoff_AuditLogon", omaUri: "./Device/Vendor/MSFT/Policy/Config/Audit/LogonLogoff_AuditLogon", dataType: "Integer", value: "3", description: "0 = None; 1 = Success; 2 = Failure; 3 = Success and Failure" },
+      { area: "Audit", name: "System_AuditSecuritySystemExtension", omaUri: "./Device/Vendor/MSFT/Policy/Config/Audit/System_AuditSecuritySystemExtension", dataType: "Integer", value: "3", description: "0 = None; 1 = Success; 2 = Failure; 3 = Success and Failure" },
+      { area: "Authentication", name: "AllowAadPasswordReset", omaUri: "./Device/Vendor/MSFT/Policy/Config/Authentication/AllowAadPasswordReset", dataType: "Integer", value: "1", description: "0 = Disable SSPR on lock screen; 1 = Enable" },
+      { area: "Authentication", name: "EnableFastFirstSignIn", omaUri: "./Device/Vendor/MSFT/Policy/Config/Authentication/EnableFastFirstSignIn", dataType: "Integer", value: "1", description: "0 = Disable; 1 = Enable Fast First Sign-In" },
+      { area: "Authentication", name: "PreferredAadTenantDomainName", omaUri: "./Device/Vendor/MSFT/Policy/Config/Authentication/PreferredAadTenantDomainName", dataType: "String", value: "contoso.onmicrosoft.com", description: "Appends default tenant domain if user omits @domain" },
+      { area: "Autoplay", name: "DisallowAutoplayForNonVolumeDevices", omaUri: "./Device/Vendor/MSFT/Policy/Config/Autoplay/DisallowAutoplayForNonVolumeDevices", dataType: "Integer", value: "1", description: "0 = Allow MTP/PTP autoplay; 1 = Disallow" },
+      { area: "Autoplay", name: "TurnOffAutoPlay", omaUri: "./Device/Vendor/MSFT/Policy/Config/Autoplay/TurnOffAutoPlay", dataType: "Integer", value: "255", description: "0 = Disabled; 128 = All drives; 255 = CD-ROM and removable drives" },
+      { area: "Bitlocker", name: "RequireDeviceEncryption", omaUri: "./Device/Vendor/MSFT/Policy/Config/Bitlocker/RequireDeviceEncryption", dataType: "Integer", value: "1", description: "0 = Disabled; 1 = Require silent/enforced BitLocker encryption" },
+      { area: "Bitlocker", name: "EncryptionMethodByDriveType", omaUri: "./Device/Vendor/MSFT/Policy/Config/Bitlocker/EncryptionMethodByDriveType", dataType: "String", value: "<enabled/><data id=\"EncryptionMethodWithXtsOsDropDown_Name\" value=\"7\"/>", description: "ADMX string: 6 = XTS-AES 128-bit; 7 = XTS-AES 256-bit" },
+      { area: "Bitlocker", name: "SystemDrivesRequireStartupAuthentication", omaUri: "./Device/Vendor/MSFT/Policy/Config/Bitlocker/SystemDrivesRequireStartupAuthentication", dataType: "String", value: "<enabled/><data id=\"ConfigurePINUsageDropDown_Name\" value=\"1\"/>", description: "Configures TPM + Startup PIN requirements" },
+      { area: "Bitlocker", name: "AllowWarningForOtherDiskEncryption", omaUri: "./Device/Vendor/MSFT/Policy/Config/Bitlocker/AllowWarningForOtherDiskEncryption", dataType: "Integer", value: "0", description: "0 = Suppress third-party encryption warnings; 1 = Allow" },
+      { area: "BITS", name: "MaxBandwidth", omaUri: "./Device/Vendor/MSFT/Policy/Config/BITS/MaxBandwidth", dataType: "Integer", value: "5000", description: "Maximum background transfer rate in Kbps (0 to 4294967295)" },
+      { area: "Bluetooth", name: "AllowAdvertising", omaUri: "./Device/Vendor/MSFT/Policy/Config/Bluetooth/AllowAdvertising", dataType: "Integer", value: "0", description: "0 = Disallow Bluetooth advertising; 1 = Allow" },
+      { area: "Bluetooth", name: "AllowDiscoverableMode", omaUri: "./Device/Vendor/MSFT/Policy/Config/Bluetooth/AllowDiscoverableMode", dataType: "Integer", value: "0", description: "0 = Disallow discoverable mode; 1 = Allow" },
+      { area: "Bluetooth", name: "AllowPromptedProximalConnections", omaUri: "./Device/Vendor/MSFT/Policy/Config/Bluetooth/AllowPromptedProximalConnections", dataType: "Integer", value: "0", description: "0 = Disallow Swift Pair; 1 = Allow" },
+      { area: "Browser", name: "AllowAddressBarDropdown", omaUri: "./Device/Vendor/MSFT/Policy/Config/Browser/AllowAddressBarDropdown", dataType: "Integer", value: "1", description: "0 = Disallow; 1 = Allow" },
+      { area: "Browser", name: "AllowAutofill", omaUri: "./Device/Vendor/MSFT/Policy/Config/Browser/AllowAutofill", dataType: "Integer", value: "0", description: "0 = Disable autofill; 1 = Allow" },
+      { area: "Browser", name: "AllowInPrivate", omaUri: "./Device/Vendor/MSFT/Policy/Config/Browser/AllowInPrivate", dataType: "Integer", value: "0", description: "0 = Block InPrivate browsing; 1 = Allow" },
+      { area: "Camera", name: "AllowCamera", omaUri: "./Device/Vendor/MSFT/Policy/Config/Camera/AllowCamera", dataType: "Integer", value: "1", description: "0 = Deny camera access across OS; 1 = Allow" },
+      { area: "Cellular", name: "AllowRoaming", omaUri: "./Device/Vendor/MSFT/Policy/Config/Cellular/AllowRoaming", dataType: "Integer", value: "0", description: "0 = Disallow cellular data roaming; 1 = Allow" },
+      { area: "CloudDesktop", name: "AllowClipboardRedirection", omaUri: "./Device/Vendor/MSFT/Policy/Config/CloudDesktop/AllowClipboardRedirection", dataType: "Integer", value: "0", description: "0 = Disable clipboard redirection in Cloud PC; 1 = Enable" },
+      { area: "Connectivity", name: "AllowBluetooth", omaUri: "./Device/Vendor/MSFT/Policy/Config/Connectivity/AllowBluetooth", dataType: "Integer", value: "2", description: "0 = Disallow; 1 = Allow with restrictions; 2 = Allow" },
+      { area: "Connectivity", name: "AllowUSBConnection", omaUri: "./Device/Vendor/MSFT/Policy/Config/Connectivity/AllowUSBConnection", dataType: "Integer", value: "1", description: "0 = Block USB data connections; 1 = Allow" },
+      { area: "ControlPolicyConflict", name: "MDMWinsOverGP", omaUri: "./Device/Vendor/MSFT/Policy/Config/ControlPolicyConflict/MDMWinsOverGP", dataType: "Integer", value: "1", description: "0 = Group Policy wins; 1 = MDM policy wins on conflict" },
+      { area: "CredentialProviders", name: "BlockDomainPicturePassword", omaUri: "./Device/Vendor/MSFT/Policy/Config/CredentialProviders/BlockDomainPicturePassword", dataType: "Integer", value: "1", description: "0 = Allow picture password; 1 = Block" },
+      { area: "CredentialsDelegation", name: "AllowProtectedCreds", omaUri: "./Device/Vendor/MSFT/Policy/Config/CredentialsDelegation/AllowProtectedCreds", dataType: "Integer", value: "1", description: "0 = Disable; 1 = Enable Remote Credential Guard" },
+      { area: "CredentialsUI", name: "DisablePasswordReveal", omaUri: "./Device/Vendor/MSFT/Policy/Config/CredentialsUI/DisablePasswordReveal", dataType: "Integer", value: "1", description: "0 = Allow password reveal icon; 1 = Hide reveal icon" },
+      { area: "Cryptography", name: "AllowFipsAlgorithmPolicy", omaUri: "./Device/Vendor/MSFT/Policy/Config/Cryptography/AllowFipsAlgorithmPolicy", dataType: "Integer", value: "1", description: "0 = Disable FIPS mode; 1 = Enforce FIPS algorithms" },
+      { area: "DataProtection", name: "AllowDirectMemoryAccess", omaUri: "./Device/Vendor/MSFT/Policy/Config/DataProtection/AllowDirectMemoryAccess", dataType: "Integer", value: "0", description: "0 = Block DMA when locked; 1 = Allow" },
+      { area: "DataUsage", name: "SetCost3G", omaUri: "./Device/Vendor/MSFT/Policy/Config/DataUsage/SetCost3G", dataType: "Integer", value: "1", description: "0 = Unrestricted; 1 = Fixed cost; 2 = Variable cost" },
+      { area: "Defender", name: "AllowRealtimeMonitoring", omaUri: "./Device/Vendor/MSFT/Policy/Config/Defender/AllowRealtimeMonitoring", dataType: "Integer", value: "1", description: "0 = Disable real-time AV; 1 = Enable real-time AV" },
+      { area: "Defender", name: "AllowCloudProtection", omaUri: "./Device/Vendor/MSFT/Policy/Config/Defender/AllowCloudProtection", dataType: "Integer", value: "1", description: "0 = Disable cloud-delivered protection; 1 = Enable" },
+      { area: "Defender", name: "SubmitSamplesConsent", omaUri: "./Device/Vendor/MSFT/Policy/Config/Defender/SubmitSamplesConsent", dataType: "Integer", value: "1", description: "0 = Always prompt; 1 = Send safe samples; 2 = Never; 3 = Send all" },
+      { area: "Defender", name: "PUAProtection", omaUri: "./Device/Vendor/MSFT/Policy/Config/Defender/PUAProtection", dataType: "Integer", value: "1", description: "0 = Off; 1 = Block PUA; 2 = Audit mode" },
+      { area: "Defender", name: "EnableNetworkProtection", omaUri: "./Device/Vendor/MSFT/Policy/Config/Defender/EnableNetworkProtection", dataType: "Integer", value: "1", description: "0 = Off; 1 = Enabled (Block); 2 = Audit mode" },
+      { area: "DeliveryOptimization", name: "DODownloadMode", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODownloadMode", dataType: "Integer", value: "1", description: "0 = HTTP only; 1 = LAN; 2 = Group; 3 = Internet; 99 = Simple; 100 = Bypass" },
+      { area: "DeliveryOptimization", name: "DOMaxCacheSize", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMaxCacheSize", dataType: "Integer", value: "10", description: "Maximum cache size in GB (1 to 4294967295)" },
+      { area: "Desktop", name: "Wallpaper", omaUri: "./User/Vendor/MSFT/Policy/Config/Desktop/Wallpaper", dataType: "String", value: "https://cdn.contoso.com/wallpaper.jpg", description: "URL or local UNC path to desktop wallpaper image" },
+      { area: "DesktopAppInstaller", name: "EnableAppInstaller", omaUri: "./Device/Vendor/MSFT/Policy/Config/DesktopAppInstaller/EnableAppInstaller", dataType: "Integer", value: "1", description: "0 = Disable winget; 1 = Enable winget" },
+      { area: "DeviceGuard", name: "EnableVirtualizationBasedSecurity", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeviceGuard/EnableVirtualizationBasedSecurity", dataType: "Integer", value: "1", description: "0 = Disable VBS; 1 = Enable VBS" },
+      { area: "DeviceGuard", name: "HypervisorEnforcedCodeIntegrity", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeviceGuard/HypervisorEnforcedCodeIntegrity", dataType: "Integer", value: "1", description: "0 = Off; 1 = Enabled with UEFI lock; 2 = Enabled without lock" },
+      { area: "DeviceGuard", name: "LsaCfgFlags", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeviceGuard/LsaCfgFlags", dataType: "Integer", value: "1", description: "Credential Guard: 0 = Off; 1 = Enabled with UEFI lock; 2 = Without lock" },
+      { area: "DeviceHealthMonitoring", name: "AllowDeviceHealthMonitoring", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeviceHealthMonitoring/AllowDeviceHealthMonitoring", dataType: "Integer", value: "1", description: "0 = Disable Endpoint Analytics telemetry; 1 = Enable" },
+      { area: "DeviceInstallation", name: "PreventDeviceInstallationOfDevicesNotDescribedByOtherPolicySettings", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeviceInstallation/PreventDeviceInstallationOfDevicesNotDescribedByOtherPolicySettings", dataType: "Integer", value: "1", description: "0 = Allow unlisted hardware; 1 = Block unlisted hardware" },
+      { area: "DeviceLock", name: "DevicePasswordEnabled", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeviceLock/DevicePasswordEnabled", dataType: "Integer", value: "0", description: "0 = Require password/PIN; 1 = Do not require" },
+      { area: "DeviceLock", name: "MinDevicePasswordLength", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeviceLock/MinDevicePasswordLength", dataType: "Integer", value: "8", description: "Minimum password length (4 to 16 characters)" },
+      { area: "DeviceLock", name: "MaxInactivityTimeDeviceLock", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeviceLock/MaxInactivityTimeDeviceLock", dataType: "Integer", value: "15", description: "Idle screen lock timeout in minutes (1 to 999)" },
+      { area: "DeviceLock", name: "MaxDevicePasswordFailedAttempts", omaUri: "./Device/Vendor/MSFT/Policy/Config/DeviceLock/MaxDevicePasswordFailedAttempts", dataType: "Integer", value: "10", description: "Failed attempts before device wipe (4 to 16)" },
+      { area: "Display", name: "DisableGdiDpiscaling", omaUri: "./Device/Vendor/MSFT/Policy/Config/Display/DisableGdiDpiscaling", dataType: "Integer", value: "0", description: "0 = Enable GDI DPI scaling; 1 = Disable" },
+      { area: "DmaGuard", name: "DeviceEnumerationPolicy", omaUri: "./Device/Vendor/MSFT/Policy/Config/DmaGuard/DeviceEnumerationPolicy", dataType: "Integer", value: "1", description: "0 = Block all external DMA; 1 = Only while logged in; 2 = Allow all" },
+      { area: "ErrorReporting", name: "DisableWindowsErrorReporting", omaUri: "./Device/Vendor/MSFT/Policy/Config/ErrorReporting/DisableWindowsErrorReporting", dataType: "Integer", value: "0", description: "0 = Enable WER; 1 = Disable WER" },
+      { area: "Experience", name: "AllowWindowsConsumerFeatures", omaUri: "./Device/Vendor/MSFT/Policy/Config/Experience/AllowWindowsConsumerFeatures", dataType: "Integer", value: "0", description: "0 = Disable consumer app suggestions/promotions; 1 = Allow" },
+      { area: "Experience", name: "AllowSpotlightCollection", omaUri: "./User/Vendor/MSFT/Policy/Config/Experience/AllowSpotlightCollection", dataType: "Integer", value: "0", description: "0 = Disable Windows Spotlight; 1 = Allow" },
+      { area: "ExploitGuard", name: "AttackSurfaceReductionRules", omaUri: "./Device/Vendor/MSFT/Policy/Config/ExploitGuard/AttackSurfaceReductionRules", dataType: "String", value: "BE9BA2D9-53EA-4CDC-84E5-9B1EEEE46550=1|D4F940AB-401B-4EFC-AADC-AD5F3C50688A=1", description: "Pipe-separated GUID=State pairs (0=Off, 1=Block, 2=Audit, 6=Warn)" },
+      { area: "ExploitGuard", name: "EnableControlledFolderAccess", omaUri: "./Device/Vendor/MSFT/Policy/Config/ExploitGuard/EnableControlledFolderAccess", dataType: "Integer", value: "1", description: "0 = Off; 1 = Block; 2 = Audit; 3 = Block disk modification only" },
+      { area: "FederatedAuthentication", name: "EnableWebSignIn", omaUri: "./Device/Vendor/MSFT/Policy/Config/FederatedAuthentication/EnableWebSignIn", dataType: "Integer", value: "1", description: "0 = Disable Web Sign-in on lock screen; 1 = Enable" },
+      { area: "Feeds", name: "EnableFeeds", omaUri: "./Device/Vendor/MSFT/Policy/Config/Feeds/EnableFeeds", dataType: "Integer", value: "0", description: "0 = Disable Widgets / News and Interests; 1 = Enable" },
+      { area: "FileExplorer", name: "TurnOffDataExecutionPrevention", omaUri: "./Device/Vendor/MSFT/Policy/Config/FileExplorer/TurnOffDataExecutionPrevention", dataType: "Integer", value: "0", description: "0 = Keep DEP enabled for Explorer; 1 = Turn off DEP" },
+      { area: "FileSystem", name: "LongPathsEnabled", omaUri: "./Device/Vendor/MSFT/Policy/Config/FileSystem/LongPathsEnabled", dataType: "Integer", value: "1", description: "0 = 260-char MAX_PATH limit; 1 = Enable Win32 long paths" },
+      { area: "Games", name: "AllowGameDVR", omaUri: "./Device/Vendor/MSFT/Policy/Config/Games/AllowGameDVR", dataType: "Integer", value: "0", description: "0 = Disable Game DVR screen recording; 1 = Allow" },
+      { area: "HumanPresence", name: "ForceInstantWake", omaUri: "./Device/Vendor/MSFT/Policy/Config/HumanPresence/ForceInstantWake", dataType: "Integer", value: "1", description: "0 = Disabled; 1 = Force Wake on Approach" },
+      { area: "HumanPresence", name: "ForceInstantLock", omaUri: "./Device/Vendor/MSFT/Policy/Config/HumanPresence/ForceInstantLock", dataType: "Integer", value: "1", description: "0 = Disabled; 1 = Force Lock on Leave" },
+      { area: "InternetExplorer", name: "EnterpriseModeSiteList", omaUri: "./Device/Vendor/MSFT/Policy/Config/InternetExplorer/EnterpriseModeSiteList", dataType: "String", value: "https://intranet.contoso.com/sites.xml", description: "URL to IE Mode XML site list for Microsoft Edge" },
+      { area: "Kerberos", name: "AllowForestSearchOrder", omaUri: "./Device/Vendor/MSFT/Policy/Config/Kerberos/AllowForestSearchOrder", dataType: "String", value: "<enabled/><data id=\"ForestSearchList\" value=\"corp.contoso.com\"/>", description: "ADMX string configuring Kerberos forest search order" },
+      { area: "KioskBrowser", name: "BlockedUrlExceptions", omaUri: "./User/Vendor/MSFT/Policy/Config/KioskBrowser/BlockedUrlExceptions", dataType: "String", value: "https://*.contoso.com", description: "Allowed URL patterns in Kiosk Browser" },
+      { area: "LanmanServer", name: "RequireSecuritySignature", omaUri: "./Device/Vendor/MSFT/Policy/Config/LanmanServer/RequireSecuritySignature", dataType: "Integer", value: "1", description: "0 = Optional SMB server signing; 1 = Require SMB signing" },
+      { area: "LanmanWorkstation", name: "EnableInsecureGuestLogons", omaUri: "./Device/Vendor/MSFT/Policy/Config/LanmanWorkstation/EnableInsecureGuestLogons", dataType: "Integer", value: "0", description: "0 = Block SMBv2/v3 guest logons (Secure); 1 = Allow" },
+      { area: "LanmanWorkstation", name: "RequireSecuritySignature", omaUri: "./Device/Vendor/MSFT/Policy/Config/LanmanWorkstation/RequireSecuritySignature", dataType: "Integer", value: "1", description: "0 = Optional SMB client signing; 1 = Require SMB signing" },
+      { area: "Licensing", name: "AllowWindowsEntitlementReactivation", omaUri: "./Device/Vendor/MSFT/Policy/Config/Licensing/AllowWindowsEntitlementReactivation", dataType: "Integer", value: "1", description: "0 = Disallow; 1 = Allow subscription license reactivation" },
+      { area: "LocalPoliciesSecurityOptions", name: "InteractiveLogon_DoNotDisplayLastSignedIn", omaUri: "./Device/Vendor/MSFT/Policy/Config/LocalPoliciesSecurityOptions/InteractiveLogon_DoNotDisplayLastSignedIn", dataType: "Integer", value: "1", description: "0 = Show last user; 1 = Do not display last signed-in user" },
+      { area: "LocalPoliciesSecurityOptions", name: "UserAccountControl_BehaviorOfTheElevationPromptForAdministrators", omaUri: "./Device/Vendor/MSFT/Policy/Config/LocalPoliciesSecurityOptions/UserAccountControl_BehaviorOfTheElevationPromptForAdministrators", dataType: "Integer", value: "2", description: "0 = Elevate without prompt; 1 = Prompt for creds; 2 = Prompt on secure desktop" },
+      { area: "LocalSecurityAuthority", name: "ConfigureLsaProtectedProcess", omaUri: "./Device/Vendor/MSFT/Policy/Config/LocalSecurityAuthority/ConfigureLsaProtectedProcess", dataType: "Integer", value: "1", description: "0 = Off; 1 = Enabled with UEFI lock; 2 = Enabled without lock" },
+      { area: "LocalUsersAndGroups", name: "Configure", omaUri: "./Device/Vendor/MSFT/Policy/Config/LocalUsersAndGroups/Configure", dataType: "String (XML file)", value: "<GroupConfiguration><accessgroup desc=\"Administrators\"><group action=\"U\"/><add member=\"AzureAD\\AdminGroup\"/></group></GroupConfiguration>", description: "XML payload modifying local Administrators or other local groups" },
+      { area: "LockDown", name: "AllowEdgeSwipe", omaUri: "./Device/Vendor/MSFT/Policy/Config/LockDown/AllowEdgeSwipe", dataType: "Integer", value: "0", description: "0 = Disable touch edge swipe in kiosk mode; 1 = Allow" },
+      { area: "Maps", name: "AllowOfflineMapsDownloadOverMeteredConnection", omaUri: "./Device/Vendor/MSFT/Policy/Config/Maps/AllowOfflineMapsDownloadOverMeteredConnection", dataType: "Integer", value: "0", description: "0 = Block metered map downloads; 1 = Allow" },
+      { area: "MemoryDump", name: "CrashDumpEnabled", omaUri: "./Device/Vendor/MSFT/Policy/Config/MemoryDump/CrashDumpEnabled", dataType: "Integer", value: "7", description: "0 = None; 1 = Complete; 2 = Kernel; 3 = Small; 7 = Automatic" },
+      { area: "MSSecurityGuide", name: "ConfigureSMBv1Server", omaUri: "./Device/Vendor/MSFT/Policy/Config/MSSecurityGuide/ConfigureSMBv1Server", dataType: "Integer", value: "0", description: "0 = Disable SMBv1 server protocol; 1 = Enable" },
+      { area: "MSSecurityGuide", name: "WDigestAuthentication", omaUri: "./Device/Vendor/MSFT/Policy/Config/MSSecurityGuide/WDigestAuthentication", dataType: "Integer", value: "0", description: "0 = Disable plain-text WDigest credential caching; 1 = Enable" },
+      { area: "Multitasking", name: "BrowserAltTabSettings", omaUri: "./User/Vendor/MSFT/Policy/Config/Multitasking/BrowserAltTabSettings", dataType: "Integer", value: "3", description: "0 = Open windows & all tabs; 1 = 5 tabs; 2 = 3 tabs; 3 = Open windows only" },
+      { area: "NetworkIsolation", name: "EnterpriseNetworkDomainNames", omaUri: "./Device/Vendor/MSFT/Policy/Config/NetworkIsolation/EnterpriseNetworkDomainNames", dataType: "String", value: "contoso.com,corp.contoso.com", description: "Comma-separated enterprise domain names for data isolation" },
+      { area: "Notifications", name: "DisallowNotificationMirroring", omaUri: "./User/Vendor/MSFT/Policy/Config/Notifications/DisallowNotificationMirroring", dataType: "Integer", value: "1", description: "0 = Allow notification mirroring; 1 = Disallow" },
+      { area: "NTLM", name: "RestrictIncomingNTLMTraffic", omaUri: "./Device/Vendor/MSFT/Policy/Config/NTLM/RestrictIncomingNTLMTraffic", dataType: "Integer", value: "2", description: "0 = Allow all; 1 = Deny all domain accounts; 2 = Deny all accounts" },
+      { area: "Power", name: "DisplayOffTimeoutOnBattery", omaUri: "./Device/Vendor/MSFT/Policy/Config/Power/DisplayOffTimeoutOnBattery", dataType: "Integer", value: "300", description: "Screen turn-off timeout on battery in seconds" },
+      { area: "Power", name: "DisplayOffTimeoutPluggedIn", omaUri: "./Device/Vendor/MSFT/Policy/Config/Power/DisplayOffTimeoutPluggedIn", dataType: "Integer", value: "900", description: "Screen turn-off timeout when plugged in in seconds" },
+      { area: "Printers", name: "PointAndPrintRestrictions", omaUri: "./Device/Vendor/MSFT/Policy/Config/Printers/PointAndPrintRestrictions", dataType: "String", value: "<enabled/><data id=\"PointAndPrintRestrictions_NoWarningNoElevationOnInstall_Enum\" value=\"0\"/>", description: "ADMX string enforcing elevation prompt for Point and Print drivers" },
+      { area: "Privacy", name: "LetAppsAccessLocation", omaUri: "./Device/Vendor/MSFT/Policy/Config/Privacy/LetAppsAccessLocation", dataType: "Integer", value: "0", description: "0 = User in control; 1 = Force allow; 2 = Force deny" },
+      { area: "Privacy", name: "LetAppsAccessMicrophone", omaUri: "./Device/Vendor/MSFT/Policy/Config/Privacy/LetAppsAccessMicrophone", dataType: "Integer", value: "0", description: "0 = User in control; 1 = Force allow; 2 = Force deny" },
+      { area: "Privacy", name: "LetAppsAccessCamera", omaUri: "./Device/Vendor/MSFT/Policy/Config/Privacy/LetAppsAccessCamera", dataType: "Integer", value: "0", description: "0 = User in control; 1 = Force allow; 2 = Force deny" },
+      { area: "RemoteDesktopServices", name: "UserAuthentication", omaUri: "./Device/Vendor/MSFT/Policy/Config/RemoteDesktopServices/UserAuthentication", dataType: "Integer", value: "1", description: "0 = NLA not required; 1 = Require Network Level Authentication (NLA)" },
+      { area: "RemoteDesktopServices", name: "DoNotAllowDriveRedirection", omaUri: "./Device/Vendor/MSFT/Policy/Config/RemoteDesktopServices/DoNotAllowDriveRedirection", dataType: "Integer", value: "1", description: "0 = Allow drive redirection; 1 = Block local drive redirection" },
+      { area: "RemoteManagement", name: "AllowBasicAuthentication_Server", omaUri: "./Device/Vendor/MSFT/Policy/Config/RemoteManagement/AllowBasicAuthentication_Server", dataType: "Integer", value: "0", description: "0 = Disallow WinRM Basic Auth (Secure); 1 = Allow" },
+      { area: "Search", name: "AllowSearchToUseLocation", omaUri: "./Device/Vendor/MSFT/Policy/Config/Search/AllowSearchToUseLocation", dataType: "Integer", value: "0", description: "0 = Disallow Windows Search location access; 1 = Allow" },
+      { area: "Search", name: "AllowDynamicContentInSearchbox", omaUri: "./Device/Vendor/MSFT/Policy/Config/Search/AllowDynamicContentInSearchbox", dataType: "Integer", value: "0", description: "0 = Disable Search Highlights; 1 = Enable Search Highlights" },
+      { area: "SecureBoot", name: "AvailableUpdates", omaUri: "./Device/Vendor/MSFT/Policy/Config/SecureBoot/AvailableUpdates", dataType: "Integer", value: "16384", description: "Bitmask triggering Secure Boot DB/DBX certificate updates" },
+      { area: "Security", name: "RequireProvisioningPackageSignature", omaUri: "./Device/Vendor/MSFT/Policy/Config/Security/RequireProvisioningPackageSignature", dataType: "Integer", value: "1", description: "0 = Allow unsigned PPKG; 1 = Require signed provisioning packages" },
+      { area: "Settings", name: "PageVisibilityList", omaUri: "./Device/Vendor/MSFT/Policy/Config/Settings/PageVisibilityList", dataType: "String", value: "showonly:display;sound;bluetooth;wifi;windowsupdate", description: "Controls which Windows Settings pages are visible (showonly: or hide:)" },
+      { area: "SettingsSync", name: "DisableSettingSync", omaUri: "./User/Vendor/MSFT/Policy/Config/SettingsSync/DisableSettingSync", dataType: "Integer", value: "2", description: "0 = Disabled; 2 = Enabled (Prevent consumer settings sync)" },
+      { area: "SmartScreen", name: "EnableSmartScreenInShell", omaUri: "./Device/Vendor/MSFT/Policy/Config/SmartScreen/EnableSmartScreenInShell", dataType: "Integer", value: "1", description: "0 = Off; 1 = Enable Defender SmartScreen for apps and files" },
+      { area: "SmartScreen", name: "PreventOverrideForFilesInShell", omaUri: "./Device/Vendor/MSFT/Policy/Config/SmartScreen/PreventOverrideForFilesInShell", dataType: "Integer", value: "1", description: "0 = Allow bypass; 1 = Prevent users from bypassing SmartScreen warnings" },
+      { area: "Start", name: "ConfigureStartPins", omaUri: "./Device/Vendor/MSFT/Policy/Config/Start/ConfigureStartPins", dataType: "String", value: "{\"pinnedList\":[{\"desktopAppLink\":\"%ALLUSERSPROFILE%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Microsoft Edge.lnk\"}]}", description: "JSON payload defining pinned apps on Windows 11 Start menu" },
+      { area: "Start", name: "HideRecentJumplists", omaUri: "./User/Vendor/MSFT/Policy/Config/Start/HideRecentJumplists", dataType: "Integer", value: "1", description: "0 = Show recommended/recent items; 1 = Hide" },
+      { area: "Storage", name: "AllowStorageSenseGlobal", omaUri: "./Device/Vendor/MSFT/Policy/Config/Storage/AllowStorageSenseGlobal", dataType: "Integer", value: "1", description: "0 = Disable Storage Sense; 1 = Enable Storage Sense" },
+      { area: "Storage", name: "RemovableDiskDenyWriteAccess", omaUri: "./Device/Vendor/MSFT/Policy/Config/Storage/RemovableDiskDenyWriteAccess", dataType: "Integer", value: "1", description: "0 = Allow write; 1 = Block write access to removable USB drives" },
+      { area: "Sudo", name: "Enabled", omaUri: "./Device/Vendor/MSFT/Policy/Config/Sudo/Enabled", dataType: "Integer", value: "0", description: "0 = Disabled; 1 = ForceNewWindow; 2 = DisableInput; 3 = Normal (Inline)" },
+      { area: "System", name: "AllowTelemetry", omaUri: "./Device/Vendor/MSFT/Policy/Config/System/AllowTelemetry", dataType: "Integer", value: "1", description: "0 = Security (Enterprise); 1 = Required; 2 = Enhanced; 3 = Optional" },
+      { area: "System", name: "AllowClipboardHistory", omaUri: "./Device/Vendor/MSFT/Policy/Config/System/AllowClipboardHistory", dataType: "Integer", value: "0", description: "0 = Disable clipboard history; 1 = Allow" },
+      { area: "TaskManager", name: "DisableTaskMgr", omaUri: "./User/Vendor/MSFT/Policy/Config/TaskManager/DisableTaskMgr", dataType: "Integer", value: "0", description: "0 = Allow Task Manager; 1 = Disable Task Manager" },
+      { area: "TenantRestrictions", name: "Payload", omaUri: "./Device/Vendor/MSFT/Policy/Config/TenantRestrictions/Payload", dataType: "String", value: "{\"tenantId\":\"00000000-0000-0000-0000-000000000000\"}", description: "JSON configuration restricting Entra ID tenant sign-ins" },
+      { area: "TextInput", name: "AllowLinguisticDataCollection", omaUri: "./Device/Vendor/MSFT/Policy/Config/TextInput/AllowLinguisticDataCollection", dataType: "Integer", value: "0", description: "0 = Disallow typing/inking telemetry; 1 = Allow" },
+      { area: "TimeLanguageSettings", name: "ConfigureTimeZone", omaUri: "./Device/Vendor/MSFT/Policy/Config/TimeLanguageSettings/ConfigureTimeZone", dataType: "String", value: "India Standard Time", description: "Sets Windows standard time zone name" },
+      { area: "Update", name: "DeferFeatureUpdatesPeriodInDays", omaUri: "./Device/Vendor/MSFT/Policy/Config/Update/DeferFeatureUpdatesPeriodInDays", dataType: "Integer", value: "30", description: "Number of days to defer feature updates (0 to 365)" },
+      { area: "Update", name: "DeferQualityUpdatesPeriodInDays", omaUri: "./Device/Vendor/MSFT/Policy/Config/Update/DeferQualityUpdatesPeriodInDays", dataType: "Integer", value: "7", description: "Number of days to defer quality updates (0 to 30)" },
+      { area: "Update", name: "TargetReleaseVersion", omaUri: "./Device/Vendor/MSFT/Policy/Config/Update/TargetReleaseVersion", dataType: "String", value: "24H2", description: "Pins Windows 11 feature update target version (e.g., 24H2)" },
+      { area: "Update", name: "PauseQualityUpdatesStartTime", omaUri: "./Device/Vendor/MSFT/Policy/Config/Update/PauseQualityUpdatesStartTime", dataType: "String", value: "2026-11-25", description: "ISO date (YYYY-MM-DD) to pause quality updates for up to 35 days" },
+      { area: "UserRights", name: "DenyLocalLogOn", omaUri: "./Device/Vendor/MSFT/Policy/Config/UserRights/DenyLocalLogOn", dataType: "String", value: "Guests", description: "Semicolon/delimiter-separated accounts denied local logon" },
+      { area: "UserRights", name: "DebugPrograms", omaUri: "./Device/Vendor/MSFT/Policy/Config/UserRights/DebugPrograms", dataType: "String", value: "Administrators", description: "Accounts granted SeDebugPrivilege" },
+      { area: "VirtualizationBasedTechnology", name: "HypervisorEnforcedCodeIntegrity", omaUri: "./Device/Vendor/MSFT/Policy/Config/VirtualizationBasedTechnology/HypervisorEnforcedCodeIntegrity", dataType: "Integer", value: "1", description: "0 = Off; 1 = Enabled with UEFI lock; 2 = Enabled without lock" },
+      { area: "WebThreatDefense", name: "NotifyPasswordReuse", omaUri: "./Device/Vendor/MSFT/Policy/Config/WebThreatDefense/NotifyPasswordReuse", dataType: "Integer", value: "1", description: "0 = Off; 1 = Warn users reusing corporate passwords" },
+      { area: "Wifi", name: "AllowAutoConnectToWiFiSenseHotspots", omaUri: "./Device/Vendor/MSFT/Policy/Config/Wifi/AllowAutoConnectToWiFiSenseHotspots", dataType: "Integer", value: "0", description: "0 = Disallow Wi-Fi Sense hotspot auto-connect; 1 = Allow" },
+      { area: "Wifi", name: "AllowManualWiFiConfiguration", omaUri: "./Device/Vendor/MSFT/Policy/Config/Wifi/AllowManualWiFiConfiguration", dataType: "Integer", value: "1", description: "0 = Block manual Wi-Fi creation; 1 = Allow" },
+      { area: "WindowsAI", name: "TurnOffWindowsCopilot", omaUri: "./User/Vendor/MSFT/Policy/Config/WindowsAI/TurnOffWindowsCopilot", dataType: "Integer", value: "1", description: "0 = Allow Copilot; 1 = Turn off Windows Copilot" },
+      { area: "WindowsAI", name: "DisableAIDataAnalysis", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/DisableAIDataAnalysis", dataType: "Integer", value: "1", description: "0 = Allow Windows Recall snapshots; 1 = Disable Recall snapshots" },
+      { area: "WindowsAI", name: "AllowRecallEnablement", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/AllowRecallEnablement", dataType: "Integer", value: "0", description: "0 = Recall unavailable; 1 = Recall available for opt-in" },
+      { area: "WindowsAI", name: "ConfigureAgentConnectors", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/ConfigureAgentConnectors", dataType: "Integer", value: "2", description: "0 = User in control; 1 = Force Enable MCP; 2 = Force Disable MCP" },
+      { area: "WindowsAI", name: "AgentConnectorAccessPolicy", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/AgentConnectorAccessPolicy", dataType: "String", value: "{\"allowedConnectors\":[]}", description: "JSON allowlist for MCP Server/Host connections" },
+      { area: "WindowsAI", name: "AgentConsentDuration", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/AgentConsentDuration", dataType: "Integer", value: "720", description: "Consent validity duration in hours (1 to 8760; default 720)" },
+      { area: "WindowsDefenderSecurityCenter", name: "DisallowExploitProtectionOverride", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsDefenderSecurityCenter/DisallowExploitProtectionOverride", dataType: "Integer", value: "1", description: "0 = Allow user override; 1 = Prevent local override" },
+      { area: "WindowsInkWorkspace", name: "AllowWindowsInkWorkspace", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsInkWorkspace/AllowWindowsInkWorkspace", dataType: "Integer", value: "1", description: "0 = Disabled; 1 = On, disallowed above lock; 2 = On" },
+      { area: "WindowsLogon", name: "HideFastUserSwitching", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsLogon/HideFastUserSwitching", dataType: "Integer", value: "1", description: "0 = Show Switch User; 1 = Hide Fast User Switching" },
+      { area: "WindowsPowerShell", name: "TurnOnScriptExecution", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsPowerShell/TurnOnScriptExecution", dataType: "String", value: "<enabled/><data id=\"ExecutionPolicy\" value=\"RemoteSigned\"/>", description: "Sets PowerShell execution policy (AllSigned, RemoteSigned, Unrestricted)" },
+      { area: "WindowsSandbox", name: "AllowNetworking", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsSandbox/AllowNetworking", dataType: "Integer", value: "0", description: "0 = Disable network inside Windows Sandbox; 1 = Allow" },
+      { area: "WirelessDisplay", name: "RequirePinForPairing", omaUri: "./Device/Vendor/MSFT/Policy/Config/WirelessDisplay/RequirePinForPairing", dataType: "Integer", value: "2", description: "0 = Never; 1 = First time; 2 = Always require PIN for Miracast" }
+    ];
+
+    // =========================================================================
+    // 2. HEXNODE UEM DATA TYPE OPTIONS & STATE
+    // =========================================================================
+    const HEXNODE_DATA_TYPES = [
+      'String',
+      'Integer',
+      'Boolean',
+      'Floating point',
+      'Date and time',
+      'Base64',
+      'XML'
+    ];
+
+    let outputView = 'cards'; // 'cards', 'syncml', or 'json'
+    let profileItems = [];
+
+    // =========================================================================
+    // 3. INITIALIZATION & HEXNODE CONFIGURATION
+    // =========================================================================
+    function init() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('rgm_hexnode_csp_v1'));
+        if (saved && Array.isArray(saved)) profileItems = saved;
+        const savedName = localStorage.getItem('rgm_hexnode_csp_profile_name');
+        if (savedName) document.getElementById('profileNameInput').value = savedName;
+      } catch (e) {}
+
+      populateAreaFilter();
+      renderCatalog();
+      renderProfile();
+    }
+
+    function onProfileNameChange() {
+      try {
+        localStorage.setItem('rgm_hexnode_csp_profile_name', document.getElementById('profileNameInput').value);
+      } catch (e) {}
+      if (outputView !== 'cards') renderProfile();
+    }
+
+    function saveToStorage() {
+      try {
+        localStorage.setItem('rgm_hexnode_csp_v1', JSON.stringify(profileItems));
+      } catch (e) {}
+    }
+
+    function normalizeHexnodeDataType(dt) {
+      if (dt === 'String (XML file)') return 'XML';
+      if (dt === 'Base64 (file)') return 'Base64';
+      return dt;
+    }
+
+    // =========================================================================
+    // 4. 140-PAYLOAD CATALOG FILTERING & ACTIONS
+    // =========================================================================
+    function populateAreaFilter() {
+      const areas = [...new Set(CSP_LIBRARY.map(x => x.area))].sort();
+      const select = document.getElementById('catalogAreaFilter');
+      select.innerHTML = `<option value="ALL">All Core MDM Areas (${areas.length} Areas)</option>` +
+        areas.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
+    }
+
+    function getFilteredCatalog() {
+      const q = document.getElementById('catalogSearchInput').value.trim().toLowerCase();
+      const areaFilter = document.getElementById('catalogAreaFilter').value;
+      const typeFilter = document.getElementById('catalogTypeFilter').value;
+
+      return CSP_LIBRARY.filter(item => {
+        const matchArea = areaFilter === 'ALL' || item.area === areaFilter;
+        const matchType = typeFilter === 'ALL' || item.dataType === typeFilter;
+        const matchQuery = !q ||
+          item.area.toLowerCase().includes(q) ||
+          item.name.toLowerCase().includes(q) ||
+          item.omaUri.toLowerCase().includes(q) ||
+          item.description.toLowerCase().includes(q);
+        return matchArea && matchType && matchQuery;
+      });
+    }
+
+    function renderCatalog() {
+      const filtered = getFilteredCatalog();
+      document.getElementById('catalogCountBadge').textContent = filtered.length === CSP_LIBRARY.length
+        ? `${CSP_LIBRARY.length} Payloads Available`
+        : `${filtered.length} / ${CSP_LIBRARY.length} Payloads`;
+      const tbody = document.getElementById('catalogTableBody');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">No matching CSP payloads found. Try clearing your search filter.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(item => {
+        const realIdx = CSP_LIBRARY.indexOf(item);
+        return `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="py-2 px-3 font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.area)}</td>
+            <td class="py-2 px-3 font-medium text-blue-700 whitespace-nowrap" title="${escapeHtml(item.description)}">${escapeHtml(item.name)}</td>
+            <td class="py-2 px-3 mono text-[11px] text-slate-600 max-w-xs truncate" title="${escapeHtml(item.omaUri)}">${escapeHtml(item.omaUri)}</td>
+            <td class="py-2 px-3 whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700">${escapeHtml(item.dataType)}</span>
+            </td>
+            <td class="py-2 px-3 mono text-[11px] text-slate-800 max-w-[180px] truncate" title="${escapeHtml(item.value)}">${escapeHtml(item.value)}</td>
+            <td class="py-2 px-3 text-right whitespace-nowrap space-x-1">
+              <button type="button" onclick="quickAddFromCatalog(${realIdx})" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white transition">+ Add</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function quickAddFromCatalog(idx) {
+      const item = CSP_LIBRARY[idx];
+      if (!item) return;
+
+      const existingIdx = profileItems.findIndex(p => p.omaUri.toLowerCase() === item.omaUri.toLowerCase());
+      const entry = {
+        id: existingIdx >= 0 ? profileItems[existingIdx].id : Date.now() + Math.random(),
+        name: item.name,
+        omaUri: item.omaUri,
+        dataType: normalizeHexnodeDataType(item.dataType),
+        value: item.value
+      };
+
+      if (existingIdx >= 0) {
+        profileItems[existingIdx] = entry;
+      } else {
+        profileItems.push(entry);
+      }
+
+      saveToStorage();
+      renderProfile();
+      showToast(`Added "${item.name}" to Hexnode policy`);
+    }
+
+    function addAllFilteredToProfile() {
+      const filtered = getFilteredCatalog();
+      if (filtered.length === 0) return;
+
+      let addedCount = 0;
+      filtered.forEach(item => {
+        const exists = profileItems.some(p => p.omaUri.toLowerCase() === item.omaUri.toLowerCase());
+        if (!exists) {
+          profileItems.push({
+            id: Date.now() + Math.random(),
+            name: item.name,
+            omaUri: item.omaUri,
+            dataType: normalizeHexnodeDataType(item.dataType),
+            value: item.value
+          });
+          addedCount++;
+        }
+      });
+
+      saveToStorage();
+      renderProfile();
+      showToast(addedCount > 0 ? `Added ${addedCount} CSP settings to Hexnode policy` : 'All filtered settings are already in your Hexnode policy');
+    }
+
+    // =========================================================================
+    // 5. OUTPUT RENDERING (HEXNODE 4-FIELD CARDS, SYNCML XML, JSON, CSV)
+    // =========================================================================
+    function setOutputView(view) {
+      outputView = view;
+      const tabs = {
+        cards: document.getElementById('viewTabCards'),
+        syncml: document.getElementById('viewTabSyncml'),
+        json: document.getElementById('viewTabJson')
+      };
+      Object.entries(tabs).forEach(([k, el]) => {
+        if (k === view) {
+          el.className = 'px-2.5 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm';
+        } else {
+          el.className = 'px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900';
+        }
+      });
+
+      const cardsDiv = document.getElementById('outputCardsView');
+      const codeDiv = document.getElementById('outputCodeView');
+
+      if (view === 'cards') {
+        cardsDiv.classList.remove('hidden');
+        codeDiv.classList.add('hidden');
+      } else {
+        cardsDiv.classList.add('hidden');
+        codeDiv.classList.remove('hidden');
+      }
+      renderProfile();
+    }
+
+    function renderProfile() {
+      document.getElementById('itemCountBadge').textContent = profileItems.length;
+      const cardsDiv = document.getElementById('outputCardsView');
+
+      if (profileItems.length === 0) {
+        cardsDiv.innerHTML = `
+          <div class="rounded-xl border border-dashed border-slate-300 p-8 text-center space-y-2">
+            <p class="text-sm font-semibold text-slate-700">No Hexnode CSP settings added yet</p>
+            <p class="text-xs text-slate-500">Click <strong>+ Add</strong> on any of the 140 CSP payloads above to start building your Hexnode UEM policy.</p>
+          </div>
+        `;
+      } else {
+        cardsDiv.innerHTML = profileItems.map((item, idx) => {
+          const displayType = normalizeHexnodeDataType(item.dataType);
+          return `
+            <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4 space-y-2.5 text-xs">
+              <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                <span class="font-bold text-slate-800">#${idx + 1} &bull; ${escapeHtml(item.name)}</span>
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="removeItem(${item.id})" class="text-rose-600 hover:underline font-medium">Remove</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-12 gap-2 items-center">
+                <span class="col-span-3 font-medium text-slate-500">Name*</span>
+                <div class="col-span-9 flex items-center justify-between gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
+                  <span class="font-semibold text-slate-900 truncate">${escapeHtml(item.name)}</span>
+                  <button type="button" onclick="copyText('${escapeJs(item.name)}', 'Name copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-12 gap-2 items-center">
+                <span class="col-span-3 font-medium text-slate-500">OMA-URI*</span>
+                <div class="col-span-9 flex items-center justify-between gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
+                  <span class="mono text-[11px] text-slate-800 truncate" title="${escapeHtml(item.omaUri)}">${escapeHtml(item.omaUri)}</span>
+                  <button type="button" onclick="copyText('${escapeJs(item.omaUri)}', 'OMA-URI copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-12 gap-2 items-center">
+                <span class="col-span-3 font-medium text-slate-500">Data Type*</span>
+                <div class="col-span-9 flex items-center justify-between gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
+                  <span class="font-medium text-slate-800">${escapeHtml(displayType)}</span>
+                  <button type="button" onclick="copyText('${escapeJs(displayType)}', 'Data Type copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-12 gap-2 items-center">
+                <span class="col-span-3 font-medium text-slate-500">Value*</span>
+                <div class="col-span-9 flex items-center gap-2">
+                  <input type="text" value="${escapeHtml(item.value)}" onchange="updateItemValue(${item.id}, this.value)" class="w-full mono text-[11px] bg-white px-2.5 py-1.5 rounded-lg border border-slate-300 focus:border-blue-600 focus:outline-none" />
+                  <button type="button" onclick="copyText('${escapeJs(item.value)}', 'Value copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (outputView === 'syncml') {
+        document.getElementById('codeViewLabel').textContent = 'Hexnode UEM — OMA-DM SyncML XML Payload';
+        document.getElementById('codeOutputPre').textContent = generateSyncMlXml();
+      } else if (outputView === 'json') {
+        document.getElementById('codeViewLabel').textContent = 'Hexnode UEM — Custom Configuration JSON Payload';
+        document.getElementById('codeOutputPre').textContent = generateHexnodeJson();
+      }
+    }
+
+    function updateItemValue(id, newVal) {
+      const target = profileItems.find(x => x.id === id);
+      if (target) {
+        target.value = newVal;
+        saveToStorage();
+        showToast('Value updated');
+      }
+    }
+
+    function removeItem(id) {
+      profileItems = profileItems.filter(x => x.id !== id);
+      saveToStorage();
+      renderProfile();
+    }
+
+    function clearProfileItems() {
+      profileItems = [];
+      saveToStorage();
+      renderProfile();
+      showToast('Hexnode policy cleared');
+    }
+
+    function generateSyncMlXml() {
+      if (profileItems.length === 0) return '<!-- Add at least one OMA-URI setting to generate Hexnode SyncML XML -->';
+      const itemsXml = profileItems.map((item, i) => {
+        const dt = item.dataType.toLowerCase();
+        const fmt = dt.includes('int') ? 'int'
+          : dt.includes('float') ? 'float'
+          : dt.includes('bool') ? 'bool'
+          : dt.includes('date') ? 'date'
+          : dt.includes('xml') ? 'xml'
+          : dt.includes('base64') ? 'b64'
+          : 'chr';
+
+        return `        <Replace>\n          <CmdID>${i + 2}</CmdID>\n          <Meta>\n            <Format xmlns="syncml:metinf">${fmt}</Format>\n          </Meta>\n          <Item>\n            <Target>\n              <LocURI>${escapeXml(item.omaUri)}</LocURI>\n            </Target>\n            <Data>${escapeXml(item.value)}</Data>\n          </Item>\n        </Replace>`;
+      }).join('\n');
+
+      return `<SyncML xmlns="SYNCML:SYNCML1.2">\n  <SyncBody>\n    <Atomic>\n      <CmdID>1</CmdID>\n${itemsXml}\n    </Atomic>\n    <Final/>\n  </SyncBody>\n</SyncML>`;
+    }
+
+    function generateHexnodeJson() {
+      const policyName = (document.getElementById('profileNameInput')?.value || 'Hexnode-Win11-CSP-Policy').trim() || 'Hexnode-Win11-CSP-Policy';
+      const payload = {
+        platform: 'Windows',
+        mdm: 'Hexnode UEM',
+        policyName: policyName,
+        generator: 'RGM CSP Payloads',
+        customConfigurations: profileItems.map(item => ({
+          name: item.name,
+          omaUri: item.omaUri,
+          dataType: normalizeHexnodeDataType(item.dataType),
+          value: item.value
+        }))
+      };
+      return JSON.stringify(payload, null, 2);
+    }
+
+    function copyActiveOutput() {
+      if (profileItems.length === 0) {
+        showToast('Add at least one setting first');
+        return;
+      }
+      if (outputView === 'syncml') {
+        copyText(generateSyncMlXml(), 'Hexnode SyncML XML copied!');
+      } else if (outputView === 'json') {
+        copyText(generateHexnodeJson(), 'Hexnode JSON copied!');
+      } else {
+        const lines = profileItems.map(i => `Name: ${i.name}\nOMA-URI: ${i.omaUri}\nData Type: ${normalizeHexnodeDataType(i.dataType)}\nValue: ${i.value}`).join('\n---\n');
+        copyText(lines, 'Hexnode 4-Field table copied!');
+      }
+    }
+
+    function copyCodeOutput() {
+      const text = document.getElementById('codeOutputPre').textContent;
+      copyText(text, 'Copied to clipboard!');
+    }
+
+    function downloadCsv() {
+      if (profileItems.length === 0) {
+        showToast('Add at least one setting before exporting');
+        return;
+      }
+      const headers = ['Name*', 'OMA-URI*', 'Data Type*', 'Value*'];
+
+      const rows = profileItems.map(item => {
+        const dt = normalizeHexnodeDataType(item.dataType);
+        const cols = [item.name, item.omaUri, dt, item.value];
+        return cols.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+      });
+
+      const csv = [headers.join(','), ...rows].join('\n');
+      triggerDownload(csv, 'rgm-hexnode-csp-payloads.csv', 'text/csv;charset=utf-8;');
+    }
+
+    function downloadPrimaryArtifact() {
+      if (profileItems.length === 0) {
+        showToast('Add at least one setting before exporting');
+        return;
+      }
+      triggerDownload(generateSyncMlXml(), 'rgm-hexnode-csp-syncml.xml', 'application/xml');
+    }
+
+    function triggerDownload(content, filename, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // =========================================================================
+    // 7. UTILITIES
+    // =========================================================================
+    function copyText(text, successMsg) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast(successMsg || 'Copied!');
+      } catch (e) {
+        showToast('Unable to copy');
+      }
+      document.body.removeChild(ta);
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.add('hidden'), 2400);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function escapeXml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+    }
+
+    function escapeJs(str) {
+      return String(str)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '');
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
