@@ -3,20 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title> CSP Payloads Configuration Builder</title>
+  <title> CSP Payloads </title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    };
+  </script>
   <style>
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col antialiased transition-colors duration-200">
 
   <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold shadow-lg transition-all"></div>
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:border dark:border-slate-700 text-xs font-semibold shadow-lg transition-all"></div>
 
   <!-- Top Navigation Bar -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
       <!-- Brand -->
       <div class="flex items-center gap-2.5 min-w-0">
@@ -26,27 +31,36 @@
           </svg>
         </div>
         <div class="truncate">
-          <h1 class="text-base sm:text-lg font-bold text-slate-900 truncate">RGM CSP Payloads</h1>
-          <p class="text-[11px] text-slate-500 hidden sm:block">Build to exclusively for windows 11 Custom Configurations</p>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white truncate">RGM CSP Payloads</h1>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">Build to exclusively for windows 11 Custom Configurations</p>
         </div>
       </div>
 
-      <!-- Platform Badge -->
+      <!-- Platform Badge & Theme Switcher -->
       <div class="flex items-center gap-2 shrink-0">
-        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs border border-slate-200">
-          <button id="mainTabCatalog" onclick="switchMainTab('catalog')" class="px-3 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm transition">
+        <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs border border-slate-200 dark:border-slate-700">
+          <button id="mainTabCatalog" onclick="switchMainTab('catalog')" class="px-3 py-1 rounded-lg font-semibold bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition">
             CSP Catalog (147)
           </button>
-          <button id="mainTabAssistant" onclick="switchMainTab('assistant')" class="px-3 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <button id="mainTabAssistant" onclick="switchMainTab('assistant')" class="px-3 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/>
             </svg>
             Guided CSP Assistant
           </button>
         </div>
-        <span class="hidden md:inline-block px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+        <span class="hidden md:inline-block px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
           Windows 11 CSP
         </span>
+        <button id="themeToggleBtn" type="button" onclick="toggleDarkMode()" class="p-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1.5" title="Toggle Dark / Light Mode">
+          <svg id="sunIcon" class="w-4 h-4 hidden text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          <svg id="moonIcon" class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+          <span id="themeToggleLabel" class="hidden sm:inline">Dark</span>
+        </button>
       </div>
     </div>
   </header>
@@ -55,87 +69,87 @@
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
 
     <!-- GUIDED CSP ASSISTANT TAB SECTION -->
-    <section id="assistantSection" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-5">
-      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+    <section id="assistantSection" class="hidden bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-5 transition-colors">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
         <div>
           <div class="flex items-center gap-2">
-            <h2 class="text-base font-bold text-slate-900">Guided CSP Search &amp; Recommendation Assistant</h2>
-            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">Interactive Wizard</span>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white">Guided CSP Search &amp; Recommendation Assistant</h2>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">Interactive Wizard</span>
           </div>
-          <p class="text-xs text-slate-500 mt-0.5">Describe what you want to restrict or configure in plain English, answer a few quick questions, and generate the exact Windows 11 CSPs.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Describe what you want to restrict or configure in plain English, answer a few quick questions, and generate the exact Windows 11 CSPs.</p>
         </div>
-        <button type="button" onclick="resetAssistant()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+        <button type="button" onclick="resetAssistant()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition">
           Reset Search
         </button>
       </div>
 
       <!-- Step 1: Natural Language Goal Input & Quick Scenario Chips -->
       <div class="space-y-2.5">
-        <label for="assistantQueryInput" class="block text-xs font-semibold text-slate-700">What policy or restriction are you trying to configure?</label>
+        <label for="assistantQueryInput" class="block text-xs font-semibold text-slate-700 dark:text-slate-300">What policy or restriction are you trying to configure?</label>
         <div class="flex flex-col sm:flex-row gap-2.5">
-          <input id="assistantQueryInput" type="text" onkeydown="if(event.key==='Enter') runAssistantSearch()" placeholder="e.g., bluetooth file transfer restrictions via CSP, block USB storage, disable Windows Recall & AI MCP..." class="flex-1 px-3.5 py-2.5 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none" />
+          <input id="assistantQueryInput" type="text" onkeydown="if(event.key==='Enter') runAssistantSearch()" placeholder="e.g., bluetooth file transfer restrictions via CSP, block USB storage, disable Windows Recall & AI MCP..." class="flex-1 px-3.5 py-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-600 focus:outline-none" />
           <button type="button" onclick="runAssistantSearch()" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white transition shrink-0">
             Analyze &amp; Ask Questions
           </button>
         </div>
         <div class="flex flex-wrap items-center gap-1.5 pt-1">
-          <span class="text-[11px] font-medium text-slate-500 mr-1">Try an example:</span>
-          <button type="button" onclick="triggerExamplePrompt('bluetooth file transfer restrictions via CSP')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
+          <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mr-1">Try an example:</span>
+          <button type="button" onclick="triggerExamplePrompt('bluetooth file transfer restrictions via CSP')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/60 hover:text-blue-700 dark:hover:text-blue-300 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition">
             Bluetooth file transfer restrictions
           </button>
-          <button type="button" onclick="triggerExamplePrompt('block USB storage drives and autoplay')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
+          <button type="button" onclick="triggerExamplePrompt('block USB storage drives and autoplay')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/60 hover:text-blue-700 dark:hover:text-blue-300 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition">
             USB storage &amp; AutoPlay lockdown
           </button>
-          <button type="button" onclick="triggerExamplePrompt('restrict Windows AI Copilot Recall and MCP agent connectors')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
+          <button type="button" onclick="triggerExamplePrompt('restrict Windows AI Copilot Recall and MCP agent connectors')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/60 hover:text-blue-700 dark:hover:text-blue-300 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition">
             Windows AI, Recall &amp; MCP restrictions
           </button>
-          <button type="button" onclick="triggerExamplePrompt('AppLocker executable and script restrictions')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
+          <button type="button" onclick="triggerExamplePrompt('AppLocker executable and script restrictions')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/60 hover:text-blue-700 dark:hover:text-blue-300 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition">
             AppLocker EXE &amp; Script rules
           </button>
-          <button type="button" onclick="triggerExamplePrompt('BitLocker drive encryption with XTS-AES 256')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
+          <button type="button" onclick="triggerExamplePrompt('BitLocker drive encryption with XTS-AES 256')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/60 hover:text-blue-700 dark:hover:text-blue-300 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition">
             BitLocker encryption enforcement
           </button>
         </div>
       </div>
 
       <!-- Step 2: Interactive Clarifying Questions -->
-      <div id="assistantQuestionsContainer" class="hidden space-y-4 pt-2 border-t border-slate-100">
+      <div id="assistantQuestionsContainer" class="hidden space-y-4 pt-2 border-t border-slate-100 dark:border-slate-800">
         <!-- Populated dynamically by JS -->
       </div>
 
       <!-- Step 3: Recommended CSP Results -->
-      <div id="assistantResultsContainer" class="hidden space-y-3 pt-2 border-t border-slate-100">
+      <div id="assistantResultsContainer" class="hidden space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
         <!-- Populated dynamically by JS -->
       </div>
     </section>
 
     <!-- TOP SECTION: Ready-to-Deploy CSP Payloads Catalog Browser -->
-    <section id="catalogSection" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+    <section id="catalogSection" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-4 transition-colors">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
         <div>
           <div class="flex items-center gap-2">
-            <h2 class="text-base font-bold text-slate-900">Ready-to-Deploy Windows 11 CSP Payloads</h2>
-            <span id="catalogCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">147 Payloads Available</span>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white">Ready-to-Deploy Windows 11 CSP Payloads</h2>
+            <span id="catalogCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">147 Payloads Available</span>
           </div>
-          <p class="text-xs text-slate-500 mt-0.5">Search across Windows 11 Core MDM &amp; AppLocker CSP areas and click <strong>+ Add</strong> to include settings in your custom profile.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Search across Windows 11 Core MDM &amp; AppLocker CSP areas and click <strong>+ Add</strong> to include settings in your custom profile.</p>
         </div>
-        <button type="button" onclick="addAllFilteredToProfile()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition">
+        <button type="button" onclick="addAllFilteredToProfile()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white transition">
           + Add All Filtered
         </button>
       </div>
 
       <!-- Filter Controls -->
       <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-        <div class="sm:col-span-5">
-          <input id="catalogSearchInput" type="text" oninput="renderCatalog()" placeholder="Search by area, policy name, OMA-URI, or keyword..." class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none" />
+        <div class="sm:col-span-4">
+          <input id="catalogSearchInput" type="text" oninput="renderCatalog()" placeholder="Search by area, policy name, OMA-URI, or keyword..." class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-600 focus:outline-none" />
         </div>
         <div class="sm:col-span-4">
-          <select id="catalogAreaFilter" onchange="renderCatalog()" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none">
+          <select id="catalogAreaFilter" onchange="renderCatalog()" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-600 focus:outline-none">
             <option value="ALL">All Core MDM Areas</option>
           </select>
         </div>
-        <div class="sm:col-span-3">
-          <select id="catalogTypeFilter" onchange="renderCatalog()" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none">
+        <div class="sm:col-span-2">
+          <select id="catalogTypeFilter" onchange="renderCatalog()" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-600 focus:outline-none">
             <option value="ALL">All Data Types</option>
             <option value="Integer">Integer</option>
             <option value="String">String</option>
@@ -143,13 +157,18 @@
             <option value="Base64">Base64</option>
           </select>
         </div>
+        <div class="sm:col-span-2">
+          <button type="button" onclick="resetCatalogFilters()" class="w-full px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition">
+            Reset Filters
+          </button>
+        </div>
       </div>
 
       <!-- Catalog Table -->
-      <div class="border border-slate-200 rounded-xl overflow-hidden">
+      <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
         <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
           <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200 sticky top-0 z-10">
+            <thead class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
               <tr>
                 <th class="py-2.5 px-3">Core MDM Area</th>
                 <th class="py-2.5 px-3">Name* &amp; Description</th>
@@ -160,7 +179,7 @@
                 <th class="py-2.5 px-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody id="catalogTableBody" class="divide-y divide-slate-100 bg-white">
+            <tbody id="catalogTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
               <!-- Populated by JS -->
             </tbody>
           </table>
@@ -169,31 +188,40 @@
     </section>
 
     <!-- BOTTOM SECTION: Selected Profile Settings & Export -->
-    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+    <section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-4 transition-colors">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2">
-          <h2 class="text-base font-bold text-slate-900">Selected Profile Settings</h2>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">Selected Profile Settings</h2>
           <span id="itemCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-600 text-white">0</span>
         </div>
 
-        <!-- Output View Tabs -->
-        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs">
-          <button id="viewTabCards" onclick="setOutputView('cards')" class="px-2.5 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm">
-            4-Field Table
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="startNewProfile()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 transition flex items-center gap-1.5" title="Clear all settings and reset Policy Name without reloading the page">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            New Profile
           </button>
-          <button id="viewTabSyncml" onclick="setOutputView('syncml')" class="px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900">
-            SyncML XML
-          </button>
-          <button id="viewTabJson" onclick="setOutputView('json')" class="px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900">
-            JSON Payload
-          </button>
+
+          <!-- Output View Tabs -->
+          <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs border border-slate-200/70 dark:border-slate-700">
+            <button id="viewTabCards" onclick="setOutputView('cards')" class="px-2.5 py-1 rounded-lg font-semibold bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm">
+              4-Field Table
+            </button>
+            <button id="viewTabSyncml" onclick="setOutputView('syncml')" class="px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+              SyncML XML
+            </button>
+            <button id="viewTabJson" onclick="setOutputView('json')" class="px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+              JSON Payload
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Profile Name Input -->
-      <div class="flex flex-col sm:flex-row sm:items-center gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-        <label for="profileNameInput" class="text-xs font-semibold text-slate-700 whitespace-nowrap">Policy Name:</label>
-        <input id="profileNameInput" type="text" value="Win11-CSP-Policy" oninput="onProfileNameChange()" placeholder="e.g., Win11-CSP-Policy" class="w-full px-3 py-1.5 rounded-lg text-xs mono bg-white border border-slate-300 focus:border-blue-600 focus:outline-none" />
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 bg-slate-50 dark:bg-slate-800/70 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+        <label for="profileNameInput" class="text-xs font-semibold text-slate-700 dark:text-slate-300 whitespace-nowrap">Policy Name:</label>
+        <input id="profileNameInput" type="text" value="Win11-CSP-Policy" oninput="onProfileNameChange()" placeholder="e.g., Win11-CSP-Policy" class="w-full px-3 py-1.5 rounded-lg text-xs mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:border-blue-600 focus:outline-none" />
       </div>
 
       <!-- View 1: Simple 4-Field Inline Editable Table / Cards -->
@@ -204,24 +232,24 @@
       <!-- View 2 & 3: Code Output (SyncML XML or JSON) -->
       <div id="outputCodeView" class="hidden space-y-3">
         <div class="flex items-center justify-between">
-          <span id="codeViewLabel" class="text-xs font-semibold text-slate-600">OMA-DM SyncML Payload</span>
+          <span id="codeViewLabel" class="text-xs font-semibold text-slate-600 dark:text-slate-300">OMA-DM SyncML Payload</span>
           <button onclick="copyCodeOutput()" class="px-3 py-1 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white">
             Copy Code
           </button>
         </div>
-        <pre id="codeOutputPre" class="p-4 rounded-xl bg-slate-900 text-slate-100 text-xs mono overflow-x-auto max-h-[460px] leading-relaxed whitespace-pre-wrap"></pre>
+        <pre id="codeOutputPre" class="p-4 rounded-xl bg-slate-900 dark:bg-slate-950 dark:border dark:border-slate-800 text-slate-100 text-xs mono overflow-x-auto max-h-[460px] leading-relaxed whitespace-pre-wrap"></pre>
       </div>
 
       <!-- Bottom Export Bar -->
-      <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
-        <button onclick="clearProfileItems()" class="text-xs font-medium text-rose-600 hover:underline">
-          Clear All
+      <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
+        <button type="button" onclick="startNewProfile()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 transition">
+          New Profile / Clear All
         </button>
         <div class="flex items-center gap-2">
-          <button onclick="copyActiveOutput()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition">
+          <button onclick="copyActiveOutput()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 transition">
             Copy Output
           </button>
-          <button onclick="downloadCsv()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition">
+          <button onclick="downloadCsv()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition">
             Export CSV
           </button>
           <button id="primaryExportBtn" onclick="downloadPrimaryArtifact()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition">
@@ -837,7 +865,50 @@
     // =========================================================================
     // 3. INITIALIZATION & CONFIGURATION
     // =========================================================================
+    function initTheme() {
+      let isDark = false;
+      try {
+        const savedTheme = localStorage.getItem('rgm_csp_theme');
+        if (savedTheme === 'dark') {
+          isDark = true;
+        } else if (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          isDark = true;
+        }
+      } catch (e) {}
+      applyTheme(isDark);
+    }
+
+    function applyTheme(isDark) {
+      const htmlEl = document.documentElement;
+      const sunIcon = document.getElementById('sunIcon');
+      const moonIcon = document.getElementById('moonIcon');
+      const label = document.getElementById('themeToggleLabel');
+
+      if (isDark) {
+        htmlEl.classList.add('dark');
+        if (sunIcon) sunIcon.classList.remove('hidden');
+        if (moonIcon) moonIcon.classList.add('hidden');
+        if (label) label.textContent = 'Light';
+      } else {
+        htmlEl.classList.remove('dark');
+        if (sunIcon) sunIcon.classList.add('hidden');
+        if (moonIcon) moonIcon.classList.remove('hidden');
+        if (label) label.textContent = 'Dark';
+      }
+    }
+
+    function toggleDarkMode() {
+      const isCurrentlyDark = document.documentElement.classList.contains('dark');
+      const nextDark = !isCurrentlyDark;
+      applyTheme(nextDark);
+      try {
+        localStorage.setItem('rgm_csp_theme', nextDark ? 'dark' : 'light');
+      } catch (e) {}
+      showToast(nextDark ? 'Dark mode enabled' : 'Light mode enabled');
+    }
+
     function init() {
+      initTheme();
       try {
         const saved = JSON.parse(localStorage.getItem('rgm_csp_v1'));
         if (saved && Array.isArray(saved)) profileItems = saved;
@@ -858,13 +929,13 @@
       const secAst = document.getElementById('assistantSection');
 
       if (tab === 'assistant') {
-        tabAst.className = 'px-3 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm transition flex items-center gap-1.5';
-        tabCat.className = 'px-3 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition';
+        tabAst.className = 'px-3 py-1 rounded-lg font-semibold bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition flex items-center gap-1.5';
+        tabCat.className = 'px-3 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition';
         secAst.classList.remove('hidden');
         secCat.classList.add('hidden');
       } else {
-        tabCat.className = 'px-3 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm transition';
-        tabAst.className = 'px-3 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5';
+        tabCat.className = 'px-3 py-1 rounded-lg font-semibold bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition';
+        tabAst.className = 'px-3 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1.5';
         secCat.classList.remove('hidden');
         secAst.classList.add('hidden');
       }
@@ -925,12 +996,12 @@
         });
 
         qContainer.innerHTML = `
-          <div class="rounded-xl bg-blue-50/70 border border-blue-200 p-3.5 text-xs space-y-2">
-            <div class="font-bold text-blue-900">Quick Scope Selection</div>
-            <p class="text-blue-800">We found <strong>${matches.length}</strong> matching CSP settings for <em>"${escapeHtml(q)}"</em>. Choose whether to apply them at the Device or User level:</p>
+          <div class="rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 p-3.5 text-xs space-y-2">
+            <div class="font-bold text-blue-900 dark:text-blue-200">Quick Scope Selection</div>
+            <p class="text-blue-800 dark:text-blue-300">We found <strong>${matches.length}</strong> matching CSP settings for <em>"${escapeHtml(q)}"</em>. Choose whether to apply them at the Device or User level:</p>
             <div class="flex flex-wrap gap-2 pt-1">
               <button type="button" onclick="renderFallbackAssistantResults('${escapeJs(q)}', 'device')" class="px-3 py-1.5 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700 transition">Device Scope (./Device/...)</button>
-              <button type="button" onclick="renderFallbackAssistantResults('${escapeJs(q)}', 'user')" class="px-3 py-1.5 rounded-lg font-semibold bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 transition">User Scope (./User/...)</button>
+              <button type="button" onclick="renderFallbackAssistantResults('${escapeJs(q)}', 'user')" class="px-3 py-1.5 rounded-lg font-semibold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition">User Scope (./User/...)</button>
             </div>
           </div>
         `;
@@ -951,28 +1022,28 @@
       rContainer.classList.remove('hidden');
 
       qContainer.innerHTML = `
-        <div class="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-4">
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-4 space-y-4">
           <div>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600">Matched Scenario</span>
-            <h3 class="text-sm font-bold text-slate-900 mt-0.5">${escapeHtml(activeScenario.title)}</h3>
-            <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(activeScenario.summary)}</p>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Matched Scenario</span>
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white mt-0.5">${escapeHtml(activeScenario.title)}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(activeScenario.summary)}</p>
           </div>
           <div class="space-y-4">
             ${activeScenario.questions.map(q => `
               <div class="space-y-2">
-                <div class="text-xs font-bold text-slate-800">${escapeHtml(q.label)}</div>
+                <div class="text-xs font-bold text-slate-800 dark:text-slate-200">${escapeHtml(q.label)}</div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5">
                   ${q.options.map(opt => {
                     const selected = assistantAnswers[q.id] === opt.value;
                     return `
-                      <button type="button" onclick="selectAssistantOption('${escapeJs(q.id)}', '${escapeJs(opt.value)}')" class="text-left p-3 rounded-xl border transition ${selected ? 'bg-blue-50/90 border-blue-600 ring-1 ring-blue-600' : 'bg-white border-slate-200 hover:border-blue-300'}">
+                      <button type="button" onclick="selectAssistantOption('${escapeJs(q.id)}', '${escapeJs(opt.value)}')" class="text-left p-3 rounded-xl border transition ${selected ? 'bg-blue-50/90 dark:bg-blue-950/60 border-blue-600 dark:border-blue-500 ring-1 ring-blue-600 dark:ring-blue-500' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-700'}">
                         <div class="flex items-center justify-between gap-2">
-                          <span class="text-xs font-semibold ${selected ? 'text-blue-900' : 'text-slate-800'}">${escapeHtml(opt.label)}</span>
-                          <span class="w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${selected ? 'bg-blue-600 text-white' : 'border border-slate-300'}">
+                          <span class="text-xs font-semibold ${selected ? 'text-blue-900 dark:text-blue-200' : 'text-slate-800 dark:text-slate-200'}">${escapeHtml(opt.label)}</span>
+                          <span class="w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${selected ? 'bg-blue-600 text-white' : 'border border-slate-300 dark:border-slate-600'}">
                             ${selected ? '✓' : ''}
                           </span>
                         </div>
-                        <p class="text-[11px] text-slate-500 mt-1 leading-snug">${escapeHtml(opt.desc)}</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">${escapeHtml(opt.desc)}</p>
                       </button>
                     `;
                   }).join('')}
@@ -1005,7 +1076,7 @@
       });
 
       if (matches.length === 0) {
-        rContainer.innerHTML = `<div class="p-6 text-center text-xs text-slate-500 border border-dashed border-slate-300 rounded-xl">No direct CSP matches found. Try switching to the <strong>CSP Catalog (147)</strong> tab to browse all areas.</div>`;
+        rContainer.innerHTML = `<div class="p-6 text-center text-xs text-slate-500 dark:text-slate-400 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl">No direct CSP matches found. Try switching to the <strong>CSP Catalog (147)</strong> tab to browse all areas.</div>`;
         return;
       }
 
@@ -1019,17 +1090,17 @@
       rContainer.innerHTML = `
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h4 class="text-sm font-bold text-slate-900">Generated CSP Payloads (${list.length})</h4>
-            <p class="text-[11px] text-slate-500">Tailored for: ${escapeHtml(heading)}</p>
+            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Generated CSP Payloads (${list.length})</h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Tailored for: ${escapeHtml(heading)}</p>
           </div>
           <button type="button" onclick="addAllAssistantPayloads()" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition">
             + Add All ${list.length} to Selected Policy
           </button>
         </div>
-        <div class="border border-slate-200 rounded-xl overflow-hidden">
+        <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
-              <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+              <thead class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th class="py-2 px-3">Area</th>
                   <th class="py-2 px-3">Name*</th>
@@ -1040,15 +1111,15 @@
                   <th class="py-2 px-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 bg-white">
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
                 ${list.map((item, idx) => `
-                  <tr class="hover:bg-slate-50 align-top">
-                    <td class="py-2.5 px-3 font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.area)}</td>
-                    <td class="py-2.5 px-3 font-semibold text-blue-700 whitespace-nowrap">${escapeHtml(item.name)}</td>
-                    <td class="py-2.5 px-3 mono text-[11px] text-slate-700 break-all max-w-xs">${escapeHtml(item.omaUri)}</td>
-                    <td class="py-2.5 px-3 whitespace-nowrap"><span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700">${escapeHtml(normalizeDataType(item.dataType))}</span></td>
-                    <td class="py-2.5 px-3 mono text-[11px] font-bold text-emerald-700 max-w-[180px] break-all">${escapeHtml(item.value)}</td>
-                    <td class="py-2.5 px-3 text-[11px] text-slate-600 max-w-xs">${escapeHtml(item.description)}</td>
+                  <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 align-top">
+                    <td class="py-2.5 px-3 font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">${escapeHtml(item.area)}</td>
+                    <td class="py-2.5 px-3 font-semibold text-blue-700 dark:text-blue-400 whitespace-nowrap">${escapeHtml(item.name)}</td>
+                    <td class="py-2.5 px-3 mono text-[11px] text-slate-700 dark:text-slate-300 break-all max-w-xs">${escapeHtml(item.omaUri)}</td>
+                    <td class="py-2.5 px-3 whitespace-nowrap"><span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${escapeHtml(normalizeDataType(item.dataType))}</span></td>
+                    <td class="py-2.5 px-3 mono text-[11px] font-bold text-emerald-700 dark:text-emerald-400 max-w-[180px] break-all">${escapeHtml(item.value)}</td>
+                    <td class="py-2.5 px-3 text-[11px] text-slate-600 dark:text-slate-400 max-w-xs">${escapeHtml(item.description)}</td>
                     <td class="py-2.5 px-3 text-right whitespace-nowrap">
                       <button type="button" onclick="addSingleAssistantPayload(${idx})" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white transition">+ Add</button>
                     </td>
@@ -1155,25 +1226,36 @@
       tbody.innerHTML = filtered.map(item => {
         const realIdx = CSP_LIBRARY.indexOf(item);
         const summary = getPolicySummary(item);
+        const isAdded = profileItems.some(p => p.omaUri.toLowerCase() === item.omaUri.toLowerCase());
         return `
-          <tr class="hover:bg-slate-50 transition align-top">
-            <td class="py-2.5 px-3 font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.area)}</td>
+          <tr class="${isAdded ? 'bg-blue-50/40 dark:bg-blue-950/30' : 'hover:bg-slate-50 dark:hover:bg-slate-800/60'} transition align-top">
+            <td class="py-2.5 px-3 font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">${escapeHtml(item.area)}</td>
             <td class="py-2.5 px-3 min-w-[220px] max-w-xs">
-              <div class="font-semibold text-blue-700">${escapeHtml(item.name)}</div>
-              <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">${escapeHtml(summary)}</p>
+              <div class="font-semibold text-blue-700 dark:text-blue-400">${escapeHtml(item.name)}</div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">${escapeHtml(summary)}</p>
             </td>
-            <td class="py-2.5 px-3 mono text-[11px] text-slate-600 max-w-xs truncate" title="${escapeHtml(item.omaUri)}">${escapeHtml(item.omaUri)}</td>
+            <td class="py-2.5 px-3 mono text-[11px] text-slate-600 dark:text-slate-300 max-w-xs truncate" title="${escapeHtml(item.omaUri)}">${escapeHtml(item.omaUri)}</td>
             <td class="py-2.5 px-3 whitespace-nowrap">
-              <span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700">${escapeHtml(item.dataType)}</span>
+              <span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${escapeHtml(item.dataType)}</span>
             </td>
-            <td class="py-2.5 px-3 mono text-[11px] text-slate-800 max-w-[160px] truncate" title="${escapeHtml(item.value)}">${escapeHtml(item.value)}</td>
-            <td class="py-2.5 px-3 text-[11px] text-slate-600 min-w-[200px] max-w-xs leading-snug">${escapeHtml(item.description)}</td>
+            <td class="py-2.5 px-3 mono text-[11px] text-slate-800 dark:text-slate-200 max-w-[160px] truncate" title="${escapeHtml(item.value)}">${escapeHtml(item.value)}</td>
+            <td class="py-2.5 px-3 text-[11px] text-slate-600 dark:text-slate-400 min-w-[200px] max-w-xs leading-snug">${escapeHtml(item.description)}</td>
             <td class="py-2.5 px-3 text-right whitespace-nowrap space-x-1">
-              <button type="button" onclick="quickAddFromCatalog(${realIdx})" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white transition">+ Add</button>
+              ${isAdded
+                ? `<button type="button" onclick="quickAddFromCatalog(${realIdx})" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-950/70 dark:hover:bg-emerald-900/70 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 transition" title="Click to reset value to default">Added &#10003;</button>`
+                : `<button type="button" onclick="quickAddFromCatalog(${realIdx})" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white transition">+ Add</button>`
+              }
             </td>
           </tr>
         `;
       }).join('');
+    }
+
+    function resetCatalogFilters() {
+      document.getElementById('catalogSearchInput').value = '';
+      document.getElementById('catalogAreaFilter').value = 'ALL';
+      document.getElementById('catalogTypeFilter').value = 'ALL';
+      renderCatalog();
     }
 
     function getPolicySummary(item) {
@@ -1216,6 +1298,7 @@
       }
 
       saveToStorage();
+      renderCatalog();
       renderProfile();
       showToast(`Added "${item.name}" to policy`);
     }
@@ -1241,6 +1324,7 @@
       });
 
       saveToStorage();
+      renderCatalog();
       renderProfile();
       showToast(addedCount > 0 ? `Added ${addedCount} CSP settings to policy` : 'All filtered settings are already in your policy');
     }
@@ -1257,9 +1341,9 @@
       };
       Object.entries(tabs).forEach(([k, el]) => {
         if (k === view) {
-          el.className = 'px-2.5 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm';
+          el.className = 'px-2.5 py-1 rounded-lg font-semibold bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm';
         } else {
-          el.className = 'px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900';
+          el.className = 'px-2.5 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white';
         }
       });
 
@@ -1282,9 +1366,9 @@
 
       if (profileItems.length === 0) {
         cardsDiv.innerHTML = `
-          <div class="rounded-xl border border-dashed border-slate-300 p-8 text-center space-y-2">
-            <p class="text-sm font-semibold text-slate-700">No CSP settings added yet</p>
-            <p class="text-xs text-slate-500">Click <strong>+ Add</strong> on any of the 140 CSP payloads above to start building your policy.</p>
+          <div class="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 p-8 text-center space-y-2">
+            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">No CSP settings added yet</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Click <strong>+ Add</strong> on any of the 140 CSP payloads above to start building your policy.</p>
           </div>
         `;
       } else {
@@ -1294,45 +1378,45 @@
           const notesText = item.description || (libMatch ? libMatch.description : '');
           const summaryText = item.summary || (libMatch ? getPolicySummary(libMatch) : '');
           return `
-            <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4 space-y-2.5 text-xs">
-              <div class="flex items-start justify-between gap-3 border-b border-slate-200/80 pb-2">
+            <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 p-4 space-y-2.5 text-xs">
+              <div class="flex items-start justify-between gap-3 border-b border-slate-200/80 dark:border-slate-700/80 pb-2">
                 <div>
-                  <span class="font-bold text-slate-800">#${idx + 1} &bull; ${escapeHtml(item.name)}</span>
-                  ${summaryText ? `<p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(summaryText)}</p>` : ''}
+                  <span class="font-bold text-slate-800 dark:text-slate-100">#${idx + 1} &bull; ${escapeHtml(item.name)}</span>
+                  ${summaryText ? `<p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(summaryText)}</p>` : ''}
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                  <button type="button" onclick="removeItem(${item.id})" class="text-rose-600 hover:underline font-medium">Remove</button>
+                  <button type="button" onclick="removeItem(${item.id})" class="text-rose-600 dark:text-rose-400 hover:underline font-medium">Remove</button>
                 </div>
               </div>
               <div class="grid grid-cols-12 gap-2 items-center">
-                <span class="col-span-3 font-medium text-slate-500">Name*</span>
-                <div class="col-span-9 flex items-center justify-between gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
-                  <span class="font-semibold text-slate-900 truncate">${escapeHtml(item.name)}</span>
-                  <button type="button" onclick="copyText('${escapeJs(item.name)}', 'Name copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
+                <span class="col-span-3 font-medium text-slate-500 dark:text-slate-400">Name*</span>
+                <div class="col-span-9 flex items-center justify-between gap-2 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span class="font-semibold text-slate-900 dark:text-slate-100 truncate">${escapeHtml(item.name)}</span>
+                  <button type="button" onclick="copyText('${escapeJs(item.name)}', 'Name copied')" class="text-[11px] text-blue-600 dark:text-blue-400 hover:underline shrink-0">Copy</button>
                 </div>
               </div>
               <div class="grid grid-cols-12 gap-2 items-center">
-                <span class="col-span-3 font-medium text-slate-500">OMA-URI*</span>
-                <div class="col-span-9 flex items-center justify-between gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
-                  <span class="mono text-[11px] text-slate-800 truncate" title="${escapeHtml(item.omaUri)}">${escapeHtml(item.omaUri)}</span>
-                  <button type="button" onclick="copyText('${escapeJs(item.omaUri)}', 'OMA-URI copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
+                <span class="col-span-3 font-medium text-slate-500 dark:text-slate-400">OMA-URI*</span>
+                <div class="col-span-9 flex items-center justify-between gap-2 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span class="mono text-[11px] text-slate-800 dark:text-slate-200 truncate" title="${escapeHtml(item.omaUri)}">${escapeHtml(item.omaUri)}</span>
+                  <button type="button" onclick="copyText('${escapeJs(item.omaUri)}', 'OMA-URI copied')" class="text-[11px] text-blue-600 dark:text-blue-400 hover:underline shrink-0">Copy</button>
                 </div>
               </div>
               <div class="grid grid-cols-12 gap-2 items-center">
-                <span class="col-span-3 font-medium text-slate-500">Data Type*</span>
-                <div class="col-span-9 flex items-center justify-between gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
-                  <span class="font-medium text-slate-800">${escapeHtml(displayType)}</span>
-                  <button type="button" onclick="copyText('${escapeJs(displayType)}', 'Data Type copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
+                <span class="col-span-3 font-medium text-slate-500 dark:text-slate-400">Data Type*</span>
+                <div class="col-span-9 flex items-center justify-between gap-2 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span class="font-medium text-slate-800 dark:text-slate-200">${escapeHtml(displayType)}</span>
+                  <button type="button" onclick="copyText('${escapeJs(displayType)}', 'Data Type copied')" class="text-[11px] text-blue-600 dark:text-blue-400 hover:underline shrink-0">Copy</button>
                 </div>
               </div>
               <div class="grid grid-cols-12 gap-2 items-start">
-                <span class="col-span-3 font-medium text-slate-500 pt-1.5">Value*</span>
+                <span class="col-span-3 font-medium text-slate-500 dark:text-slate-400 pt-1.5">Value*</span>
                 <div class="col-span-9 space-y-1.5">
                   <div class="flex items-center gap-2">
-                    <input type="text" value="${escapeHtml(item.value)}" onchange="updateItemValue(${item.id}, this.value)" class="w-full mono text-[11px] bg-white px-2.5 py-1.5 rounded-lg border border-slate-300 focus:border-blue-600 focus:outline-none" />
-                    <button type="button" onclick="copyText('${escapeJs(item.value)}', 'Value copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
+                    <input type="text" value="${escapeHtml(item.value)}" onchange="updateItemValue(${item.id}, this.value)" class="w-full mono text-[11px] bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:border-blue-600 focus:outline-none" />
+                    <button type="button" onclick="copyText('${escapeJs(item.value)}', 'Value copied')" class="text-[11px] text-blue-600 dark:text-blue-400 hover:underline shrink-0">Copy</button>
                   </div>
-                  ${notesText ? `<div class="px-2.5 py-1.5 rounded-lg bg-amber-50/90 border border-amber-200/80 text-[11px] text-amber-900"><span class="font-semibold">Allowed Values:</span> ${escapeHtml(notesText)}</div>` : ''}
+                  ${notesText ? `<div class="px-2.5 py-1.5 rounded-lg bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/70 text-[11px] text-amber-900 dark:text-amber-200"><span class="font-semibold">Allowed Values:</span> ${escapeHtml(notesText)}</div>` : ''}
                 </div>
               </div>
             </div>
@@ -1361,7 +1445,26 @@
     function removeItem(id) {
       profileItems = profileItems.filter(x => x.id !== id);
       saveToStorage();
+      renderCatalog();
       renderProfile();
+    }
+
+    function clearProfileItems() {
+      startNewProfile();
+    }
+
+    function startNewProfile() {
+      profileItems = [];
+      const nameInput = document.getElementById('profileNameInput');
+      if (nameInput) nameInput.value = 'Win11-CSP-Policy';
+      try {
+        localStorage.removeItem('rgm_csp_v1');
+        localStorage.removeItem('rgm_csp_profile_name');
+      } catch (e) {}
+      setOutputView('cards');
+      renderCatalog();
+      renderProfile();
+      showToast('Started a fresh policy — ready for new CSP selections');
     }
 
     function clearProfileItems() {
