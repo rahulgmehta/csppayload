@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title> CSP Payloads </title>
+  <title>RGM CSP Payloads</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -40,7 +40,7 @@
       <div class="flex items-center gap-2 shrink-0">
         <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs border border-slate-200 dark:border-slate-700">
           <button id="mainTabCatalog" onclick="switchMainTab('catalog')" class="px-3 py-1 rounded-lg font-semibold bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition">
-            CSP Catalog (147)
+            CSP Catalog (161)
           </button>
           <button id="mainTabAssistant" onclick="switchMainTab('assistant')" class="px-3 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -128,10 +128,10 @@
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
         <div>
           <div class="flex items-center gap-2">
-            <h2 class="text-base font-bold text-slate-900 dark:text-white">Ready-to-Deploy Windows 11 CSP Payloads</h2>
-            <span id="catalogCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">147 Payloads Available</span>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white">Ready-to-Deploy Windows 10/11 CSP Payloads</h2>
+            <span id="catalogCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">161 Payloads Available</span>
           </div>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Search across Windows 11 Core MDM &amp; AppLocker CSP areas and click <strong>+ Add</strong> to include settings in your custom profile.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Search across Windows 10 &amp; Windows 11 Core MDM, WindowsAI / MCP, &amp; AppLocker CSP areas and click <strong>+ Add</strong> to include settings in your custom profile.</p>
         </div>
         <button type="button" onclick="addAllFilteredToProfile()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white transition">
           + Add All Filtered
@@ -140,12 +140,19 @@
 
       <!-- Filter Controls -->
       <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-        <div class="sm:col-span-4">
-          <input id="catalogSearchInput" type="text" oninput="renderCatalog()" placeholder="Search by area, policy name, OMA-URI, or keyword..." class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-600 focus:outline-none" />
+        <div class="sm:col-span-3">
+          <input id="catalogSearchInput" type="text" oninput="renderCatalog()" placeholder="Search area, name, OMA-URI, keyword..." class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-600 focus:outline-none" />
         </div>
-        <div class="sm:col-span-4">
+        <div class="sm:col-span-3">
           <select id="catalogAreaFilter" onchange="renderCatalog()" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-600 focus:outline-none">
             <option value="ALL">All Core MDM Areas</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <select id="catalogOsFilter" onchange="renderCatalog()" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-600 focus:outline-none">
+            <option value="ALL">All OS Versions</option>
+            <option value="WIN10_PLUS">Windows 10 or later</option>
+            <option value="WIN11_ONLY">Windows 11 / Insider</option>
           </select>
         </div>
         <div class="sm:col-span-2">
@@ -172,6 +179,7 @@
               <tr>
                 <th class="py-2.5 px-3">Core MDM Area</th>
                 <th class="py-2.5 px-3">Name* &amp; Description</th>
+                <th class="py-2.5 px-3">Applicable OS</th>
                 <th class="py-2.5 px-3">OMA-URI*</th>
                 <th class="py-2.5 px-3">Data Type*</th>
                 <th class="py-2.5 px-3">Default Value*</th>
@@ -413,12 +421,27 @@
       { area: "WebThreatDefense", name: "NotifyPasswordReuse", omaUri: "./Device/Vendor/MSFT/Policy/Config/WebThreatDefense/NotifyPasswordReuse", dataType: "Integer", value: "1", description: "0 = Off; 1 = Warn users reusing corporate passwords" },
       { area: "Wifi", name: "AllowAutoConnectToWiFiSenseHotspots", omaUri: "./Device/Vendor/MSFT/Policy/Config/Wifi/AllowAutoConnectToWiFiSenseHotspots", dataType: "Integer", value: "0", description: "0 = Disallow Wi-Fi Sense hotspot auto-connect; 1 = Allow" },
       { area: "Wifi", name: "AllowManualWiFiConfiguration", omaUri: "./Device/Vendor/MSFT/Policy/Config/Wifi/AllowManualWiFiConfiguration", dataType: "Integer", value: "1", description: "0 = Block manual Wi-Fi creation; 1 = Allow" },
-      { area: "WindowsAI", name: "TurnOffWindowsCopilot", omaUri: "./User/Vendor/MSFT/Policy/Config/WindowsAI/TurnOffWindowsCopilot", dataType: "Integer", value: "1", description: "0 = Allow Copilot; 1 = Turn off Windows Copilot" },
-      { area: "WindowsAI", name: "DisableAIDataAnalysis", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/DisableAIDataAnalysis", dataType: "Integer", value: "1", description: "0 = Allow Windows Recall snapshots; 1 = Disable Recall snapshots" },
-      { area: "WindowsAI", name: "AllowRecallEnablement", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/AllowRecallEnablement", dataType: "Integer", value: "0", description: "0 = Recall unavailable; 1 = Recall available for opt-in" },
-      { area: "WindowsAI", name: "ConfigureAgentConnectors", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/ConfigureAgentConnectors", dataType: "Integer", value: "2", description: "0 = User in control; 1 = Force Enable MCP; 2 = Force Disable MCP" },
-      { area: "WindowsAI", name: "AgentConnectorAccessPolicy", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/AgentConnectorAccessPolicy", dataType: "String", value: "{\"allowedConnectors\":[]}", description: "JSON allowlist for MCP Server/Host connections" },
-      { area: "WindowsAI", name: "AgentConsentDuration", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/AgentConsentDuration", dataType: "Integer", value: "720", description: "Consent validity duration in hours (1 to 8760; default 720)" },
+      { area: "WindowsAI", name: "TurnOffWindowsCopilot", omaUri: "./User/Vendor/MSFT/Policy/Config/WindowsAI/TurnOffWindowsCopilot", dataType: "Integer", value: "1", osSupport: "Windows 10 or later", description: "Windows 10 or later: 0 = Allow Copilot; 1 = Turn off Windows Copilot" },
+      { area: "WindowsAI", name: "RemoveMicrosoftCopilotApp", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/RemoveMicrosoftCopilotApp", dataType: "Integer", value: "1", osSupport: "Windows 10 or later", description: "Windows 10 or later (Device/User): 0 = Do not remove; 1 = Uninstall Microsoft Copilot app" },
+      { area: "WindowsAI", name: "SetCopilotHardwareKey", omaUri: "./User/Vendor/MSFT/Policy/Config/WindowsAI/SetCopilotHardwareKey", dataType: "String", value: "<enabled/><data id=\"CopilotHardwareKeyValue\" value=\"Microsoft.Windows.Ai.Copilot.Provider_8wekyb3d8bbwe!App\"/>", osSupport: "Windows 10 or later", description: "Windows 10 or later (User): Configures AppUserModelId launched by the Copilot hardware key" },
+      { area: "WindowsAI", name: "DisableAIDataAnalysis", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/DisableAIDataAnalysis", dataType: "Integer", value: "1", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+ (Device/User): 0 = Allow Windows Recall snapshots; 1 = Disable & delete snapshots" },
+      { area: "WindowsAI", name: "AllowRecallEnablement", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/AllowRecallEnablement", dataType: "Integer", value: "0", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+: 0 = Recall unavailable; 1 = Recall available for end-user opt-in" },
+      { area: "WindowsAI", name: "AllowRecallExport", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/AllowRecallExport", dataType: "Integer", value: "0", osSupport: "Windows Insider Preview", description: "Windows Insider Preview (EEA only): 0 = Deny Recall snapshot export; 1 = Allow export" },
+      { area: "WindowsAI", name: "SetDenyAppListForRecall", omaUri: "./User/Vendor/MSFT/Policy/Config/WindowsAI/SetDenyAppListForRecall", dataType: "String", value: "<enabled/><data id=\"DenyAppList\" value=\"KeePass.exe;1Password.exe\"/>", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+ (User): Semicolon-separated list of app executables filtered from Recall snapshots" },
+      { area: "WindowsAI", name: "SetDenyUriListForRecall", omaUri: "./User/Vendor/MSFT/Policy/Config/WindowsAI/SetDenyUriListForRecall", dataType: "String", value: "<enabled/><data id=\"DenyUriList\" value=\"https://banking.contoso.com;https://hr.contoso.com\"/>", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+ (User): Semicolon-separated list of URIs filtered from Recall snapshots" },
+      { area: "WindowsAI", name: "SetMaximumStorageDurationForRecallSnapshots", omaUri: "./User/Vendor/MSFT/Policy/Config/WindowsAI/SetMaximumStorageDurationForRecallSnapshots", dataType: "Integer", value: "30", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+ (User): Maximum retention in days (e.g., 30, 60, 90, 180) before auto-deletion" },
+      { area: "WindowsAI", name: "SetMaximumStorageSpaceForRecallSnapshots", omaUri: "./User/Vendor/MSFT/Policy/Config/WindowsAI/SetMaximumStorageSpaceForRecallSnapshots", dataType: "Integer", value: "25", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+ (User): Maximum disk quota in GB (e.g., 25, 50, 75, 100, 150) for Recall snapshots" },
+      { area: "WindowsAI", name: "SetDataLossPreventionProvider", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/SetDataLossPreventionProvider", dataType: "String", value: "<enabled/><data id=\"DataLossPreventionProvider\" value=\"MicrosoftPurview\"/>", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+: Specifies DLP provider (e.g., Microsoft Purview) used by Recall sensitivity filtering" },
+      { area: "WindowsAI", name: "DisableRecallDataProviders", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/DisableRecallDataProviders", dataType: "Integer", value: "1", osSupport: "Windows Insider Preview", description: "Windows Insider Preview: 0 = Allow Recall data providers; 1 = Disable third-party/app data providers" },
+      { area: "WindowsAI", name: "DisableClickToDo", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/DisableClickToDo", dataType: "Integer", value: "1", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+: 0 = Enable Click to Do screen analysis; 1 = Disable Click to Do" },
+      { area: "WindowsAI", name: "DisableCocreator", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/DisableCocreator", dataType: "Integer", value: "1", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+: 0 = Enable Paint Cocreator; 1 = Disable Paint Cocreator" },
+      { area: "WindowsAI", name: "DisableGenerativeFill", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/DisableGenerativeFill", dataType: "Integer", value: "1", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+: 0 = Enable Generative Fill in Paint; 1 = Disable Generative Fill" },
+      { area: "WindowsAI", name: "DisableImageCreator", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/DisableImageCreator", dataType: "Integer", value: "1", osSupport: "Windows 11 24H2+", description: "Windows 11 24H2+: 0 = Enable Image Creator in Paint; 1 = Disable Image Creator" },
+      { area: "WindowsAI", name: "DisableSettingsAgent", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/DisableSettingsAgent", dataType: "Integer", value: "1", osSupport: "Windows Insider Preview", description: "Windows Insider Preview: 0 = Enable AI agent in Windows Settings; 1 = Disable Settings AI agent" },
+      { area: "WindowsAI", name: "ConfigureAgentConnectors", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/ConfigureAgentConnectors", dataType: "Integer", value: "2", osSupport: "Windows Insider Preview", description: "Windows Insider Preview (MCP): 0 = User in control; 1 = Force Enable MCP; 2 = Force Disable MCP" },
+      { area: "WindowsAI", name: "AgentConnectorAccessPolicy", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/AgentConnectorAccessPolicy", dataType: "String", value: "{\"allowedConnectors\":[]}", osSupport: "Windows Insider Preview", description: "Windows Insider Preview (MCP): JSON allowlist of permitted MCP Server/Host connections" },
+      { area: "WindowsAI", name: "AgentConsentDuration", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/AgentConsentDuration", dataType: "Integer", value: "720", osSupport: "Windows Insider Preview", description: "Windows Insider Preview (MCP): Consent validity duration in hours (1 to 8760; default 720)" },
+      { area: "WindowsAI", name: "OnDeviceRegistryLoggingLevel", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsAI/OnDeviceRegistryLoggingLevel", dataType: "Integer", value: "1", osSupport: "Windows Insider Preview", description: "Windows Insider Preview (MCP/Agent): Configures on-device registry logging verbosity for AI agents" },
       { area: "WindowsDefenderSecurityCenter", name: "DisallowExploitProtectionOverride", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsDefenderSecurityCenter/DisallowExploitProtectionOverride", dataType: "Integer", value: "1", description: "0 = Allow user override; 1 = Prevent local override" },
       { area: "WindowsInkWorkspace", name: "AllowWindowsInkWorkspace", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsInkWorkspace/AllowWindowsInkWorkspace", dataType: "Integer", value: "1", description: "0 = Disabled; 1 = On, disallowed above lock; 2 = On" },
       { area: "WindowsLogon", name: "HideFastUserSwitching", omaUri: "./Device/Vendor/MSFT/Policy/Config/WindowsLogon/HideFastUserSwitching", dataType: "Integer", value: "1", description: "0 = Show Switch User; 1 = Hide Fast User Switching" },
@@ -1197,18 +1220,32 @@
     function getFilteredCatalog() {
       const q = document.getElementById('catalogSearchInput').value.trim().toLowerCase();
       const areaFilter = document.getElementById('catalogAreaFilter').value;
+      const osFilter = document.getElementById('catalogOsFilter').value;
       const typeFilter = document.getElementById('catalogTypeFilter').value;
 
       return CSP_LIBRARY.filter(item => {
+        const osLabel = getItemOsSupport(item);
+        const isWin10Plus = osLabel === 'Windows 10 or later';
         const matchArea = areaFilter === 'ALL' || item.area === areaFilter;
+        const matchOs = osFilter === 'ALL' ||
+          (osFilter === 'WIN10_PLUS' && isWin10Plus) ||
+          (osFilter === 'WIN11_ONLY' && !isWin10Plus);
         const matchType = typeFilter === 'ALL' || item.dataType === typeFilter;
         const matchQuery = !q ||
           item.area.toLowerCase().includes(q) ||
           item.name.toLowerCase().includes(q) ||
           item.omaUri.toLowerCase().includes(q) ||
+          osLabel.toLowerCase().includes(q) ||
           item.description.toLowerCase().includes(q);
-        return matchArea && matchType && matchQuery;
+        return matchArea && matchOs && matchType && matchQuery;
       });
+    }
+
+    function getItemOsSupport(item) {
+      if (item.osSupport) return item.osSupport;
+      if (item.area === 'Sudo' || item.name === 'ConfigureStartPins') return 'Windows 11 22H2+';
+      if (item.area === 'HumanPresence') return 'Windows 11 22H2+';
+      return 'Windows 10 or later';
     }
 
     function renderCatalog() {
@@ -1219,26 +1256,31 @@
       const tbody = document.getElementById('catalogTableBody');
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">No matching CSP payloads found. Try clearing your search filter.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-400">No matching CSP payloads found. Try clearing your search filter.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = filtered.map(item => {
         const realIdx = CSP_LIBRARY.indexOf(item);
         const summary = getPolicySummary(item);
+        const osLabel = getItemOsSupport(item);
+        const isWin10 = osLabel === 'Windows 10 or later';
         const isAdded = profileItems.some(p => p.omaUri.toLowerCase() === item.omaUri.toLowerCase());
         return `
           <tr class="${isAdded ? 'bg-blue-50/40 dark:bg-blue-950/30' : 'hover:bg-slate-50 dark:hover:bg-slate-800/60'} transition align-top">
             <td class="py-2.5 px-3 font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">${escapeHtml(item.area)}</td>
-            <td class="py-2.5 px-3 min-w-[220px] max-w-xs">
+            <td class="py-2.5 px-3 min-w-[210px] max-w-xs">
               <div class="font-semibold text-blue-700 dark:text-blue-400">${escapeHtml(item.name)}</div>
               <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">${escapeHtml(summary)}</p>
+            </td>
+            <td class="py-2.5 px-3 whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded-md text-[11px] font-medium ${isWin10 ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/70' : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/70'}">${escapeHtml(osLabel)}</span>
             </td>
             <td class="py-2.5 px-3 mono text-[11px] text-slate-600 dark:text-slate-300 max-w-xs truncate" title="${escapeHtml(item.omaUri)}">${escapeHtml(item.omaUri)}</td>
             <td class="py-2.5 px-3 whitespace-nowrap">
               <span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${escapeHtml(item.dataType)}</span>
             </td>
-            <td class="py-2.5 px-3 mono text-[11px] text-slate-800 dark:text-slate-200 max-w-[160px] truncate" title="${escapeHtml(item.value)}">${escapeHtml(item.value)}</td>
+            <td class="py-2.5 px-3 mono text-[11px] text-slate-800 dark:text-slate-200 max-w-[150px] truncate" title="${escapeHtml(item.value)}">${escapeHtml(item.value)}</td>
             <td class="py-2.5 px-3 text-[11px] text-slate-600 dark:text-slate-400 min-w-[200px] max-w-xs leading-snug">${escapeHtml(item.description)}</td>
             <td class="py-2.5 px-3 text-right whitespace-nowrap space-x-1">
               ${isAdded
@@ -1254,6 +1296,7 @@
     function resetCatalogFilters() {
       document.getElementById('catalogSearchInput').value = '';
       document.getElementById('catalogAreaFilter').value = 'ALL';
+      document.getElementById('catalogOsFilter').value = 'ALL';
       document.getElementById('catalogTypeFilter').value = 'ALL';
       renderCatalog();
     }
