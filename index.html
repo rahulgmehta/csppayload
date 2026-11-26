@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RGM CSP Payloads — Windows 11 Custom Configuration Builder</title>
+  <title> CSP Payloads Configuration Builder</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
@@ -33,7 +33,18 @@
 
       <!-- Platform Badge -->
       <div class="flex items-center gap-2 shrink-0">
-        <span class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs border border-slate-200">
+          <button id="mainTabCatalog" onclick="switchMainTab('catalog')" class="px-3 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm transition">
+            CSP Catalog (147)
+          </button>
+          <button id="mainTabAssistant" onclick="switchMainTab('assistant')" class="px-3 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/>
+            </svg>
+            Guided CSP Assistant
+          </button>
+        </div>
+        <span class="hidden md:inline-block px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
           Windows 11 CSP
         </span>
       </div>
@@ -43,56 +54,110 @@
   <!-- Main Workspace -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
 
-    <!-- TOP SECTION: 140 Ready-to-Deploy CSP Payloads Catalog Browser -->
-    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
+    <!-- GUIDED CSP ASSISTANT TAB SECTION -->
+    <section id="assistantSection" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-bold text-slate-900">Guided CSP Search &amp; Recommendation Assistant</h2>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">Interactive Wizard</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">Describe what you want to restrict or configure in plain English, answer a few quick questions, and generate the exact Windows 11 CSPs.</p>
+        </div>
+        <button type="button" onclick="resetAssistant()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+          Reset Search
+        </button>
+      </div>
+
+      <!-- Step 1: Natural Language Goal Input & Quick Scenario Chips -->
+      <div class="space-y-2.5">
+        <label for="assistantQueryInput" class="block text-xs font-semibold text-slate-700">What policy or restriction are you trying to configure?</label>
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <input id="assistantQueryInput" type="text" onkeydown="if(event.key==='Enter') runAssistantSearch()" placeholder="e.g., bluetooth file transfer restrictions via CSP, block USB storage, disable Windows Recall & AI MCP..." class="flex-1 px-3.5 py-2.5 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none" />
+          <button type="button" onclick="runAssistantSearch()" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white transition shrink-0">
+            Analyze &amp; Ask Questions
+          </button>
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5 pt-1">
+          <span class="text-[11px] font-medium text-slate-500 mr-1">Try an example:</span>
+          <button type="button" onclick="triggerExamplePrompt('bluetooth file transfer restrictions via CSP')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
+            Bluetooth file transfer restrictions
+          </button>
+          <button type="button" onclick="triggerExamplePrompt('block USB storage drives and autoplay')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
+            USB storage &amp; AutoPlay lockdown
+          </button>
+          <button type="button" onclick="triggerExamplePrompt('restrict Windows AI Copilot Recall and MCP agent connectors')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
+            Windows AI, Recall &amp; MCP restrictions
+          </button>
+          <button type="button" onclick="triggerExamplePrompt('AppLocker executable and script restrictions')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
+            AppLocker EXE &amp; Script rules
+          </button>
+          <button type="button" onclick="triggerExamplePrompt('BitLocker drive encryption with XTS-AES 256')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
+            BitLocker encryption enforcement
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Interactive Clarifying Questions -->
+      <div id="assistantQuestionsContainer" class="hidden space-y-4 pt-2 border-t border-slate-100">
+        <!-- Populated dynamically by JS -->
+      </div>
+
+      <!-- Step 3: Recommended CSP Results -->
+      <div id="assistantResultsContainer" class="hidden space-y-3 pt-2 border-t border-slate-100">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- TOP SECTION: Ready-to-Deploy CSP Payloads Catalog Browser -->
+    <section id="catalogSection" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
         <div>
           <div class="flex items-center gap-2">
             <h2 class="text-base font-bold text-slate-900">Ready-to-Deploy Windows 11 CSP Payloads</h2>
             <span id="catalogCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">147 Payloads Available</span>
           </div>
-          <p class="text-xs text-slate-500 mt-0.5">Search by area or setting name and click <strong>+ Add</strong> to add directly to your policy.</p>
+          <p class="text-xs text-slate-500 mt-0.5">Search across Windows 11 Core MDM &amp; AppLocker CSP areas and click <strong>+ Add</strong> to include settings in your custom profile.</p>
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="addAllFilteredToProfile()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition">
-            + Add All Filtered
-          </button>
-        </div>
+        <button type="button" onclick="addAllFilteredToProfile()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition">
+          + Add All Filtered
+        </button>
       </div>
 
-      <!-- Search & Filter Controls -->
-      <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
-        <div class="sm:col-span-6">
-          <input id="catalogSearchInput" type="text" oninput="renderCatalog()" placeholder="Search payloads by Area, Name, OMA-URI, or Description (e.g., AppLocker, WindowsAI, Bitlocker, Defender)..." class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none" />
+      <!-- Filter Controls -->
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+        <div class="sm:col-span-5">
+          <input id="catalogSearchInput" type="text" oninput="renderCatalog()" placeholder="Search by area, policy name, OMA-URI, or keyword..." class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none" />
         </div>
         <div class="sm:col-span-4">
           <select id="catalogAreaFilter" onchange="renderCatalog()" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none">
             <option value="ALL">All Core MDM Areas</option>
           </select>
         </div>
-        <div class="sm:col-span-2">
+        <div class="sm:col-span-3">
           <select id="catalogTypeFilter" onchange="renderCatalog()" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 focus:outline-none">
             <option value="ALL">All Data Types</option>
             <option value="Integer">Integer</option>
             <option value="String">String</option>
             <option value="String (XML file)">String (XML file)</option>
+            <option value="Base64">Base64</option>
           </select>
         </div>
       </div>
 
-      <!-- Scrollable 140-Payload Catalog Table -->
+      <!-- Catalog Table -->
       <div class="border border-slate-200 rounded-xl overflow-hidden">
-        <div class="max-h-72 overflow-y-auto overflow-x-auto">
+        <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
           <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-100 text-slate-700 font-semibold sticky top-0 z-10 border-b border-slate-200">
+            <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200 sticky top-0 z-10">
               <tr>
-                <th class="py-2.5 px-3">Core Area</th>
-                <th class="py-2.5 px-3">Name* &amp; Policy Description</th>
+                <th class="py-2.5 px-3">Core MDM Area</th>
+                <th class="py-2.5 px-3">Name* &amp; Description</th>
                 <th class="py-2.5 px-3">OMA-URI*</th>
                 <th class="py-2.5 px-3">Data Type*</th>
                 <th class="py-2.5 px-3">Default Value*</th>
                 <th class="py-2.5 px-3">Allowed Values &amp; Notes</th>
-                <th class="py-2.5 px-3 text-right">Actions</th>
+                <th class="py-2.5 px-3 text-right">Action</th>
               </tr>
             </thead>
             <tbody id="catalogTableBody" class="divide-y divide-slate-100 bg-white">
@@ -103,12 +168,12 @@
       </div>
     </section>
 
-    <!-- SELECTED PROFILE SETTINGS & GENERATED OUTPUT -->
+    <!-- BOTTOM SECTION: Selected Profile Settings & Export -->
     <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
         <div class="flex items-center gap-2">
           <h2 class="text-base font-bold text-slate-900">Selected Profile Settings</h2>
-          <span id="itemCountBadge" class="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">0</span>
+          <span id="itemCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-600 text-white">0</span>
         </div>
 
         <!-- Output View Tabs -->
@@ -349,6 +414,425 @@
 
     let outputView = 'cards'; // 'cards', 'syncml', or 'json'
     let profileItems = [];
+    let currentMainTab = 'catalog';
+    let activeScenario = null;
+    let assistantAnswers = {};
+
+    // =========================================================================
+    // 2B. GUIDED CSP ASSISTANT SCENARIOS & DECISION TREES
+    // =========================================================================
+    const GUIDED_SCENARIOS = [
+      {
+        id: 'bluetooth',
+        keywords: ['bluetooth', 'bt', 'obex', 'file transfer', 'airdrop', 'swift pair', 'headset', 'pairing', 'discoverable'],
+        title: 'Bluetooth & File Transfer Restrictions',
+        summary: 'Windows 11 separates core Bluetooth radio control, Bluetooth advertising/discoverability, and OBEX file transfers across Connectivity and Bluetooth CSPs.',
+        questions: [
+          {
+            id: 'scope',
+            label: '1. Which policy target scope do you want to apply?',
+            options: [
+              { value: 'device', label: 'Device-wide (All users on the PC)', desc: 'Applies via ./Device/Vendor/MSFT/Policy/Config/...' },
+              { value: 'user', label: 'User-scoped (Current user session)', desc: 'Applies via ./User/Vendor/MSFT/Policy/Config/...' }
+            ]
+          },
+          {
+            id: 'btFeatures',
+            label: '2. Which Bluetooth features do you need to keep working?',
+            options: [
+              { value: 'audio_hid_only', label: 'Keep Audio & HID (Headsets, Mice, Keyboards) — Block File Transfer & Discovery', desc: 'Allows peripherals while blocking Bluetooth advertising, discoverability, and Swift Pair.' },
+              { value: 'block_file_transfer_strict', label: 'Block File Transfer & Pairings (Allow only pre-paired/approved devices)', desc: 'Sets Connectivity/AllowBluetooth to Restricted (1) and disables discoverability/advertising.' },
+              { value: 'block_all_bt', label: 'Disable Bluetooth Completely', desc: 'Turns off the Bluetooth radio completely across the OS (Connectivity/AllowBluetooth = 0).' }
+            ]
+          },
+          {
+            id: 'swiftPair',
+            label: '3. Allow Swift Pair (prompted proximal connections)?',
+            options: [
+              { value: 'block', label: 'Block Swift Pair (Recommended for security)', desc: 'Sets Bluetooth/AllowPromptedProximalConnections = 0' },
+              { value: 'allow', label: 'Allow Swift Pair', desc: 'Sets Bluetooth/AllowPromptedProximalConnections = 1' }
+            ]
+          }
+        ],
+        buildPayloads: (ans) => {
+          const prefix = ans.scope === 'user' ? './User/Vendor/MSFT/Policy/Config' : './Device/Vendor/MSFT/Policy/Config';
+          const list = [];
+
+          if (ans.btFeatures === 'block_all_bt') {
+            list.push({
+              area: 'Connectivity',
+              name: 'AllowBluetooth',
+              omaUri: `${prefix}/Connectivity/AllowBluetooth`,
+              dataType: 'Integer',
+              value: '0',
+              description: '0 = Disallow Bluetooth completely; 1 = Allow with restrictions; 2 = Allow'
+            });
+          } else if (ans.btFeatures === 'block_file_transfer_strict') {
+            list.push({
+              area: 'Connectivity',
+              name: 'AllowBluetooth',
+              omaUri: `${prefix}/Connectivity/AllowBluetooth`,
+              dataType: 'Integer',
+              value: '1',
+              description: '1 = Allow Bluetooth with restrictions (blocks OBEX file transfer/unauthorized profiles while keeping basic HID/audio)'
+            });
+            list.push({
+              area: 'Bluetooth',
+              name: 'AllowDiscoverableMode',
+              omaUri: `${prefix}/Bluetooth/AllowDiscoverableMode`,
+              dataType: 'Integer',
+              value: '0',
+              description: '0 = Prevent PC from being discoverable to nearby Bluetooth devices; 1 = Allow'
+            });
+            list.push({
+              area: 'Bluetooth',
+              name: 'AllowAdvertising',
+              omaUri: `${prefix}/Bluetooth/AllowAdvertising`,
+              dataType: 'Integer',
+              value: '0',
+              description: '0 = Disallow Bluetooth LE advertising; 1 = Allow'
+            });
+          } else {
+            // audio_hid_only
+            list.push({
+              area: 'Connectivity',
+              name: 'AllowBluetooth',
+              omaUri: `${prefix}/Connectivity/AllowBluetooth`,
+              dataType: 'Integer',
+              value: '1',
+              description: '1 = Allow with restrictions (permits standard audio/HID peripherals while restricting file transfer profiles)'
+            });
+            list.push({
+              area: 'Bluetooth',
+              name: 'AllowDiscoverableMode',
+              omaUri: `${prefix}/Bluetooth/AllowDiscoverableMode`,
+              dataType: 'Integer',
+              value: '0',
+              description: '0 = Disallow discoverable mode so other devices cannot initiate file transfers; 1 = Allow'
+            });
+            list.push({
+              area: 'Bluetooth',
+              name: 'AllowAdvertising',
+              omaUri: `${prefix}/Bluetooth/AllowAdvertising`,
+              dataType: 'Integer',
+              value: '0',
+              description: '0 = Disallow Bluetooth advertising; 1 = Allow'
+            });
+          }
+
+          list.push({
+            area: 'Bluetooth',
+            name: 'AllowPromptedProximalConnections',
+            omaUri: `${prefix}/Bluetooth/AllowPromptedProximalConnections`,
+            dataType: 'Integer',
+            value: ans.swiftPair === 'allow' ? '1' : '0',
+            description: '0 = Disallow Swift Pair proximal popups; 1 = Allow'
+          });
+
+          return list;
+        }
+      },
+      {
+        id: 'usb_storage',
+        keywords: ['usb', 'removable', 'flash drive', 'thumb drive', 'storage', 'autoplay', 'external drive', 'mtp'],
+        title: 'USB & Removable Storage Restrictions',
+        summary: 'Control read/write access to removable USB drives, MTP/PTP phones, and AutoPlay execution.',
+        questions: [
+          {
+            id: 'usbMode',
+            label: '1. What level of USB / Removable Drive restriction do you need?',
+            options: [
+              { value: 'deny_write', label: 'Read-Only USB Drives (Block Write Access)', desc: 'Allows reading files from USB drives while blocking data exfiltration/writing (Storage/RemovableDiskDenyWriteAccess = 1).' },
+              { value: 'block_all_usb', label: 'Block All USB Data Connections', desc: 'Blocks USB storage and data connections completely (Connectivity/AllowUSBConnection = 0).' },
+              { value: 'allow_usb_block_autoplay', label: 'Allow USB Drives, Only Disable AutoPlay', desc: 'Keeps USB read/write working while disabling AutoPlay for all drives.' }
+            ]
+          },
+          {
+            id: 'autoplay',
+            label: '2. Disable AutoPlay for removable and non-volume (MTP/camera) devices?',
+            options: [
+              { value: 'yes', label: 'Yes — Disable AutoPlay everywhere (Recommended)', desc: 'Sets TurnOffAutoPlay = 255 and DisallowAutoplayForNonVolumeDevices = 1' },
+              { value: 'no', label: 'No — Leave AutoPlay default', desc: 'Only apply storage access policies' }
+            ]
+          }
+        ],
+        buildPayloads: (ans) => {
+          const list = [];
+          if (ans.usbMode === 'deny_write') {
+            list.push({
+              area: 'Storage',
+              name: 'RemovableDiskDenyWriteAccess',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/Storage/RemovableDiskDenyWriteAccess',
+              dataType: 'Integer',
+              value: '1',
+              description: '0 = Allow write; 1 = Block write access to removable USB drives (Read-only)'
+            });
+          } else if (ans.usbMode === 'block_all_usb') {
+            list.push({
+              area: 'Connectivity',
+              name: 'AllowUSBConnection',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/Connectivity/AllowUSBConnection',
+              dataType: 'Integer',
+              value: '0',
+              description: '0 = Block USB data connections; 1 = Allow'
+            });
+            list.push({
+              area: 'Storage',
+              name: 'RemovableDiskDenyWriteAccess',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/Storage/RemovableDiskDenyWriteAccess',
+              dataType: 'Integer',
+              value: '1',
+              description: '0 = Allow write; 1 = Block write access to removable USB drives'
+            });
+          }
+          if (ans.autoplay === 'yes' || ans.usbMode === 'allow_usb_block_autoplay') {
+            list.push({
+              area: 'Autoplay',
+              name: 'TurnOffAutoPlay',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/Autoplay/TurnOffAutoPlay',
+              dataType: 'Integer',
+              value: '255',
+              description: '0 = Disabled; 128 = All drives; 255 = CD-ROM and removable drives'
+            });
+            list.push({
+              area: 'Autoplay',
+              name: 'DisallowAutoplayForNonVolumeDevices',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/Autoplay/DisallowAutoplayForNonVolumeDevices',
+              dataType: 'Integer',
+              value: '1',
+              description: '0 = Allow MTP/PTP autoplay; 1 = Disallow'
+            });
+          }
+          return list;
+        }
+      },
+      {
+        id: 'windows_ai',
+        keywords: ['ai', 'copilot', 'recall', 'mcp', 'agent', 'connector', 'snapshot', 'windowsai'],
+        title: 'Windows AI, Copilot, Recall & MCP Agent Connectors',
+        summary: 'Configure Windows 11 AI capabilities including Windows Copilot, Recall screen snapshots, and Model Context Protocol (MCP) Agent Connectors.',
+        questions: [
+          {
+            id: 'recallMode',
+            label: '1. How should Windows Recall & screen snapshots be configured?',
+            options: [
+              { value: 'disable_all', label: 'Completely Disable Recall & Delete Snapshots', desc: 'Sets AllowRecallEnablement = 0 and DisableAIDataAnalysis = 1' },
+              { value: 'opt_in', label: 'Allow User Opt-In for Recall', desc: 'Sets AllowRecallEnablement = 1 and DisableAIDataAnalysis = 0' }
+            ]
+          },
+          {
+            id: 'mcpMode',
+            label: '2. How should Model Context Protocol (MCP) Agent Connectors behave?',
+            options: [
+              { value: 'force_disable', label: 'Force Disable MCP Agent Connectors', desc: 'Sets ConfigureAgentConnectors = 2' },
+              { value: 'allowlist_only', label: 'Enable MCP with Strict JSON Allowlist', desc: 'Sets ConfigureAgentConnectors = 1 + AgentConnectorAccessPolicy JSON' },
+              { value: 'user_control', label: 'User in Control (with 24h consent expiry)', desc: 'Sets ConfigureAgentConnectors = 0 + AgentConsentDuration = 24' }
+            ]
+          },
+          {
+            id: 'copilotMode',
+            label: '3. Windows Copilot availability?',
+            options: [
+              { value: 'disable', label: 'Turn Off Windows Copilot', desc: 'Sets TurnOffWindowsCopilot = 1' },
+              { value: 'allow', label: 'Allow Windows Copilot', desc: 'Sets TurnOffWindowsCopilot = 0' }
+            ]
+          }
+        ],
+        buildPayloads: (ans) => {
+          const list = [
+            {
+              area: 'WindowsAI',
+              name: 'AllowRecallEnablement',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/WindowsAI/AllowRecallEnablement',
+              dataType: 'Integer',
+              value: ans.recallMode === 'opt_in' ? '1' : '0',
+              description: '0 = Recall unavailable; 1 = Recall available for user opt-in'
+            },
+            {
+              area: 'WindowsAI',
+              name: 'DisableAIDataAnalysis',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/WindowsAI/DisableAIDataAnalysis',
+              dataType: 'Integer',
+              value: ans.recallMode === 'opt_in' ? '0' : '1',
+              description: '0 = Allow Windows Recall snapshots; 1 = Disable Recall snapshots'
+            },
+            {
+              area: 'WindowsAI',
+              name: 'TurnOffWindowsCopilot',
+              omaUri: './User/Vendor/MSFT/Policy/Config/WindowsAI/TurnOffWindowsCopilot',
+              dataType: 'Integer',
+              value: ans.copilotMode === 'allow' ? '0' : '1',
+              description: '0 = Allow Copilot; 1 = Turn off Windows Copilot'
+            }
+          ];
+
+          if (ans.mcpMode === 'force_disable') {
+            list.push({
+              area: 'WindowsAI',
+              name: 'ConfigureAgentConnectors',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/WindowsAI/ConfigureAgentConnectors',
+              dataType: 'Integer',
+              value: '2',
+              description: '0 = User in control; 1 = Force Enable MCP; 2 = Force Disable MCP'
+            });
+          } else if (ans.mcpMode === 'allowlist_only') {
+            list.push({
+              area: 'WindowsAI',
+              name: 'ConfigureAgentConnectors',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/WindowsAI/ConfigureAgentConnectors',
+              dataType: 'Integer',
+              value: '1',
+              description: '0 = User in control; 1 = Force Enable MCP; 2 = Force Disable MCP'
+            });
+            list.push({
+              area: 'WindowsAI',
+              name: 'AgentConnectorAccessPolicy',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/WindowsAI/AgentConnectorAccessPolicy',
+              dataType: 'String',
+              value: '{"allowedConnectors":[]}',
+              description: 'JSON allowlist for permitted MCP Server/Host connections'
+            });
+          } else {
+            list.push({
+              area: 'WindowsAI',
+              name: 'ConfigureAgentConnectors',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/WindowsAI/ConfigureAgentConnectors',
+              dataType: 'Integer',
+              value: '0',
+              description: '0 = User in control; 1 = Force Enable MCP; 2 = Force Disable MCP'
+            });
+            list.push({
+              area: 'WindowsAI',
+              name: 'AgentConsentDuration',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/WindowsAI/AgentConsentDuration',
+              dataType: 'Integer',
+              value: '24',
+              description: 'Consent validity duration in hours (1 to 8760; default 720)'
+            });
+          }
+          return list;
+        }
+      },
+      {
+        id: 'applocker',
+        keywords: ['applocker', 'executable', 'exe', 'msi', 'script', 'dll', 'application control', 'whitelist', 'allowlist'],
+        title: 'AppLocker Executable, Script & Installer Restrictions',
+        summary: 'Enforce XML RuleCollections via the AppLocker CSP to restrict unauthorized .exe, .msi, script, or .dll execution.',
+        questions: [
+          {
+            id: 'enforcement',
+            label: '1. Which AppLocker enforcement mode do you want to deploy?',
+            options: [
+              { value: 'Enabled', label: 'Enforce Rules (Enabled)', desc: 'Actively blocks any executable/script not permitted by your RuleCollection.' },
+              { value: 'AuditOnly', label: 'Audit Only (AuditOnly — Recommended for initial rollout)', desc: 'Logs AppLocker events to Event Viewer without blocking users.' }
+            ]
+          },
+          {
+            id: 'collections',
+            label: '2. Which file types should be restricted?',
+            options: [
+              { value: 'exe_only', label: 'Executables Only (.exe / .com)', desc: 'Generates ./Vendor/MSFT/AppLocker/ApplicationLaunchRestrictions/Grouping/EXE/Policy' },
+              { value: 'exe_msi_script', label: 'Executables + Installers + Scripts (EXE, MSI, Script)', desc: 'Generates EXE, MSI, and Script RuleCollection XML payloads' }
+            ]
+          }
+        ],
+        buildPayloads: (ans) => {
+          const mode = ans.enforcement || 'Enabled';
+          const list = [
+            {
+              area: 'AppLocker',
+              name: 'EXE_Policy',
+              omaUri: './Vendor/MSFT/AppLocker/ApplicationLaunchRestrictions/Grouping/EXE/Policy',
+              dataType: 'XML',
+              value: `<RuleCollection Type="Exe" EnforcementMode="${mode}"><FilePathRule Id="fd686d83-a829-4351-8ff4-27c7de5755d2" Name="All files" Description="Allows members of the local Administrators group to run all applications." UserOrGroupSid="S-1-5-32-544" Action="Allow"><Conditions><FilePathCondition Path="*"/></Conditions></FilePathRule></RuleCollection>`,
+              description: `AppLocker Executable (.exe / .com) XML RuleCollection (EnforcementMode: ${mode})`
+            }
+          ];
+          if (ans.collections === 'exe_msi_script') {
+            list.push({
+              area: 'AppLocker',
+              name: 'MSI_Policy',
+              omaUri: './Vendor/MSFT/AppLocker/ApplicationLaunchRestrictions/Grouping/MSI/Policy',
+              dataType: 'XML',
+              value: `<RuleCollection Type="Msi" EnforcementMode="${mode}"><FilePathRule Id="64ad46ff-0d71-4fa0-a30b-3f3d30c5433d" Name="All Windows Installer files" Description="Allows members of the local Administrators group to run all Windows Installer files." UserOrGroupSid="S-1-5-32-544" Action="Allow"><Conditions><FilePathCondition Path="*.*"/></Conditions></FilePathRule></RuleCollection>`,
+              description: `AppLocker Windows Installer (.msi) XML RuleCollection (EnforcementMode: ${mode})`
+            });
+            list.push({
+              area: 'AppLocker',
+              name: 'Script_Policy',
+              omaUri: './Vendor/MSFT/AppLocker/ApplicationLaunchRestrictions/Grouping/Script/Policy',
+              dataType: 'XML',
+              value: `<RuleCollection Type="Script" EnforcementMode="${mode}"><FilePathRule Id="ed97d0cb-15ff-430f-b82c-8d7832adc1ac" Name="All scripts" Description="Allows members of the local Administrators group to run all scripts." UserOrGroupSid="S-1-5-32-544" Action="Allow"><Conditions><FilePathCondition Path="*"/></Conditions></FilePathRule></RuleCollection>`,
+              description: `AppLocker Script (.ps1, .bat, .cmd, .vbs, .js) XML RuleCollection (EnforcementMode: ${mode})`
+            });
+          }
+          return list;
+        }
+      },
+      {
+        id: 'bitlocker',
+        keywords: ['bitlocker', 'encryption', 'disk', 'xts', 'aes', 'tpm', 'pin', 'drive encryption'],
+        title: 'BitLocker Drive Encryption Configuration',
+        summary: 'Enforce silent BitLocker encryption, XTS-AES cipher strength, and TPM/PIN startup authentication.',
+        questions: [
+          {
+            id: 'cipher',
+            label: '1. Select the XTS-AES encryption algorithm strength:',
+            options: [
+              { value: '7', label: 'XTS-AES 256-bit (Value: 7)', desc: 'Maximum cryptographic strength for OS and fixed drives.' },
+              { value: '6', label: 'XTS-AES 128-bit (Value: 6)', desc: 'Windows default balanced performance and encryption.' }
+            ]
+          },
+          {
+            id: 'startupAuth',
+            label: '2. Require Startup PIN alongside TPM?',
+            options: [
+              { value: 'tpm_only', label: 'TPM Only (Silent Encryption — No Pre-Boot PIN)', desc: 'Enables silent BitLocker encryption without interrupting user boot.' },
+              { value: 'tpm_pin', label: 'Require TPM + Startup PIN', desc: 'Enforces pre-boot PIN authentication via SystemDrivesRequireStartupAuthentication.' }
+            ]
+          }
+        ],
+        buildPayloads: (ans) => {
+          const list = [
+            {
+              area: 'Bitlocker',
+              name: 'RequireDeviceEncryption',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/Bitlocker/RequireDeviceEncryption',
+              dataType: 'Integer',
+              value: '1',
+              description: '0 = Disabled; 1 = Require silent/enforced BitLocker encryption'
+            },
+            {
+              area: 'Bitlocker',
+              name: 'EncryptionMethodByDriveType',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/Bitlocker/EncryptionMethodByDriveType',
+              dataType: 'String',
+              value: `<enabled/><data id="EncryptionMethodWithXtsOsDropDown_Name" value="${ans.cipher || '7'}"/>`,
+              description: 'ADMX string: 6 = XTS-AES 128-bit; 7 = XTS-AES 256-bit'
+            },
+            {
+              area: 'Bitlocker',
+              name: 'AllowWarningForOtherDiskEncryption',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/Bitlocker/AllowWarningForOtherDiskEncryption',
+              dataType: 'Integer',
+              value: '0',
+              description: '0 = Suppress third-party encryption warnings; 1 = Allow'
+            }
+          ];
+          if (ans.startupAuth === 'tpm_pin') {
+            list.push({
+              area: 'Bitlocker',
+              name: 'SystemDrivesRequireStartupAuthentication',
+              omaUri: './Device/Vendor/MSFT/Policy/Config/Bitlocker/SystemDrivesRequireStartupAuthentication',
+              dataType: 'String',
+              value: '<enabled/><data id="ConfigurePINUsageDropDown_Name" value="1"/>',
+              description: 'Configures TPM + Startup PIN requirements'
+            });
+          }
+          return list;
+        }
+      }
+    ];
 
     // =========================================================================
     // 3. INITIALIZATION & CONFIGURATION
@@ -364,6 +848,250 @@
       populateAreaFilter();
       renderCatalog();
       renderProfile();
+    }
+
+    function switchMainTab(tab) {
+      currentMainTab = tab;
+      const tabCat = document.getElementById('mainTabCatalog');
+      const tabAst = document.getElementById('mainTabAssistant');
+      const secCat = document.getElementById('catalogSection');
+      const secAst = document.getElementById('assistantSection');
+
+      if (tab === 'assistant') {
+        tabAst.className = 'px-3 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm transition flex items-center gap-1.5';
+        tabCat.className = 'px-3 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition';
+        secAst.classList.remove('hidden');
+        secCat.classList.add('hidden');
+      } else {
+        tabCat.className = 'px-3 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm transition';
+        tabAst.className = 'px-3 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5';
+        secCat.classList.remove('hidden');
+        secAst.classList.add('hidden');
+      }
+    }
+
+    function triggerExamplePrompt(text) {
+      document.getElementById('assistantQueryInput').value = text;
+      runAssistantSearch();
+    }
+
+    function resetAssistant() {
+      document.getElementById('assistantQueryInput').value = '';
+      activeScenario = null;
+      assistantAnswers = {};
+      document.getElementById('assistantQuestionsContainer').classList.add('hidden');
+      document.getElementById('assistantResultsContainer').classList.add('hidden');
+    }
+
+    function runAssistantSearch() {
+      const q = document.getElementById('assistantQueryInput').value.trim().toLowerCase();
+      if (!q) {
+        showToast('Enter a policy requirement or select an example above');
+        return;
+      }
+
+      // Score guided scenarios by keyword hits
+      let bestScenario = null;
+      let bestScore = 0;
+      GUIDED_SCENARIOS.forEach(sc => {
+        let score = 0;
+        sc.keywords.forEach(kw => {
+          if (q.includes(kw)) score += kw.length;
+        });
+        if (score > bestScore) {
+          bestScore = score;
+          bestScenario = sc;
+        }
+      });
+
+      const qContainer = document.getElementById('assistantQuestionsContainer');
+      const rContainer = document.getElementById('assistantResultsContainer');
+
+      if (bestScenario) {
+        activeScenario = bestScenario;
+        assistantAnswers = {};
+        bestScenario.questions.forEach(question => {
+          assistantAnswers[question.id] = question.options[0].value;
+        });
+        renderAssistantWizard();
+      } else {
+        // Fallback smart keyword match across all 147 CSP_LIBRARY entries
+        activeScenario = null;
+        qContainer.classList.remove('hidden');
+        const terms = q.split(/\s+/).filter(t => t.length > 2 && !['via', 'csp', 'for', 'the', 'and', 'with', 'how', 'restrict', 'restrictions', 'policy', 'policies', 'windows'].includes(t));
+        const matches = CSP_LIBRARY.filter(item => {
+          const hay = `${item.area} ${item.name} ${item.omaUri} ${item.description}`.toLowerCase();
+          return terms.length > 0 ? terms.some(t => hay.includes(t)) : hay.includes(q);
+        });
+
+        qContainer.innerHTML = `
+          <div class="rounded-xl bg-blue-50/70 border border-blue-200 p-3.5 text-xs space-y-2">
+            <div class="font-bold text-blue-900">Quick Scope Selection</div>
+            <p class="text-blue-800">We found <strong>${matches.length}</strong> matching CSP settings for <em>"${escapeHtml(q)}"</em>. Choose whether to apply them at the Device or User level:</p>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button type="button" onclick="renderFallbackAssistantResults('${escapeJs(q)}', 'device')" class="px-3 py-1.5 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700 transition">Device Scope (./Device/...)</button>
+              <button type="button" onclick="renderFallbackAssistantResults('${escapeJs(q)}', 'user')" class="px-3 py-1.5 rounded-lg font-semibold bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 transition">User Scope (./User/...)</button>
+            </div>
+          </div>
+        `;
+        renderFallbackAssistantResults(q, 'device');
+      }
+    }
+
+    function selectAssistantOption(questionId, optionValue) {
+      assistantAnswers[questionId] = optionValue;
+      renderAssistantWizard();
+    }
+
+    function renderAssistantWizard() {
+      if (!activeScenario) return;
+      const qContainer = document.getElementById('assistantQuestionsContainer');
+      const rContainer = document.getElementById('assistantResultsContainer');
+      qContainer.classList.remove('hidden');
+      rContainer.classList.remove('hidden');
+
+      qContainer.innerHTML = `
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-4">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600">Matched Scenario</span>
+            <h3 class="text-sm font-bold text-slate-900 mt-0.5">${escapeHtml(activeScenario.title)}</h3>
+            <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(activeScenario.summary)}</p>
+          </div>
+          <div class="space-y-4">
+            ${activeScenario.questions.map(q => `
+              <div class="space-y-2">
+                <div class="text-xs font-bold text-slate-800">${escapeHtml(q.label)}</div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                  ${q.options.map(opt => {
+                    const selected = assistantAnswers[q.id] === opt.value;
+                    return `
+                      <button type="button" onclick="selectAssistantOption('${escapeJs(q.id)}', '${escapeJs(opt.value)}')" class="text-left p-3 rounded-xl border transition ${selected ? 'bg-blue-50/90 border-blue-600 ring-1 ring-blue-600' : 'bg-white border-slate-200 hover:border-blue-300'}">
+                        <div class="flex items-center justify-between gap-2">
+                          <span class="text-xs font-semibold ${selected ? 'text-blue-900' : 'text-slate-800'}">${escapeHtml(opt.label)}</span>
+                          <span class="w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${selected ? 'bg-blue-600 text-white' : 'border border-slate-300'}">
+                            ${selected ? '✓' : ''}
+                          </span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-1 leading-snug">${escapeHtml(opt.desc)}</p>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      const generated = activeScenario.buildPayloads(assistantAnswers);
+      renderAssistantPayloadCards(generated, activeScenario.title);
+    }
+
+    function renderFallbackAssistantResults(query, scope) {
+      const rContainer = document.getElementById('assistantResultsContainer');
+      rContainer.classList.remove('hidden');
+      const terms = query.split(/\s+/).filter(t => t.length > 2 && !['via', 'csp', 'for', 'the', 'and', 'with', 'how', 'restrict', 'restrictions', 'policy', 'policies', 'windows'].includes(t));
+      const matches = CSP_LIBRARY.filter(item => {
+        const hay = `${item.area} ${item.name} ${item.omaUri} ${item.description}`.toLowerCase();
+        return terms.length > 0 ? terms.some(t => hay.includes(t)) : hay.includes(query);
+      }).map(item => {
+        let uri = item.omaUri;
+        if (scope === 'user' && uri.startsWith('./Device/')) {
+          uri = uri.replace('./Device/', './User/');
+        } else if (scope === 'device' && uri.startsWith('./User/')) {
+          uri = uri.replace('./User/', './Device/');
+        }
+        return { ...item, omaUri: uri };
+      });
+
+      if (matches.length === 0) {
+        rContainer.innerHTML = `<div class="p-6 text-center text-xs text-slate-500 border border-dashed border-slate-300 rounded-xl">No direct CSP matches found. Try switching to the <strong>CSP Catalog (147)</strong> tab to browse all areas.</div>`;
+        return;
+      }
+
+      renderAssistantPayloadCards(matches, `Matching CSPs (${scope === 'user' ? 'User' : 'Device'} Scope)`);
+    }
+
+    function renderAssistantPayloadCards(list, heading) {
+      const rContainer = document.getElementById('assistantResultsContainer');
+      window._lastAssistantPayloads = list;
+
+      rContainer.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h4 class="text-sm font-bold text-slate-900">Generated CSP Payloads (${list.length})</h4>
+            <p class="text-[11px] text-slate-500">Tailored for: ${escapeHtml(heading)}</p>
+          </div>
+          <button type="button" onclick="addAllAssistantPayloads()" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition">
+            + Add All ${list.length} to Selected Policy
+          </button>
+        </div>
+        <div class="border border-slate-200 rounded-xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="py-2 px-3">Area</th>
+                  <th class="py-2 px-3">Name*</th>
+                  <th class="py-2 px-3">OMA-URI*</th>
+                  <th class="py-2 px-3">Data Type*</th>
+                  <th class="py-2 px-3">Recommended Value*</th>
+                  <th class="py-2 px-3">Notes</th>
+                  <th class="py-2 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 bg-white">
+                ${list.map((item, idx) => `
+                  <tr class="hover:bg-slate-50 align-top">
+                    <td class="py-2.5 px-3 font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.area)}</td>
+                    <td class="py-2.5 px-3 font-semibold text-blue-700 whitespace-nowrap">${escapeHtml(item.name)}</td>
+                    <td class="py-2.5 px-3 mono text-[11px] text-slate-700 break-all max-w-xs">${escapeHtml(item.omaUri)}</td>
+                    <td class="py-2.5 px-3 whitespace-nowrap"><span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700">${escapeHtml(normalizeDataType(item.dataType))}</span></td>
+                    <td class="py-2.5 px-3 mono text-[11px] font-bold text-emerald-700 max-w-[180px] break-all">${escapeHtml(item.value)}</td>
+                    <td class="py-2.5 px-3 text-[11px] text-slate-600 max-w-xs">${escapeHtml(item.description)}</td>
+                    <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                      <button type="button" onclick="addSingleAssistantPayload(${idx})" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white transition">+ Add</button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function addSingleAssistantPayload(idx) {
+      const list = window._lastAssistantPayloads || [];
+      const item = list[idx];
+      if (!item) return;
+
+      const existingIdx = profileItems.findIndex(p => p.omaUri.toLowerCase() === item.omaUri.toLowerCase());
+      const entry = {
+        id: existingIdx >= 0 ? profileItems[existingIdx].id : Date.now() + Math.random(),
+        name: item.name,
+        omaUri: item.omaUri,
+        dataType: normalizeDataType(item.dataType),
+        value: item.value,
+        description: item.description,
+        summary: getPolicySummary(item)
+      };
+
+      if (existingIdx >= 0) {
+        profileItems[existingIdx] = entry;
+      } else {
+        profileItems.push(entry);
+      }
+      saveToStorage();
+      renderProfile();
+      showToast(`Added "${item.name}" to policy`);
+    }
+
+    function addAllAssistantPayloads() {
+      const list = window._lastAssistantPayloads || [];
+      if (list.length === 0) return;
+      list.forEach((_, idx) => addSingleAssistantPayload(idx));
+      showToast(`Added ${list.length} generated CSP settings to your policy!`);
     }
 
     function onProfileNameChange() {
