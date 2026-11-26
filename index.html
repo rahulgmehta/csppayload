@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RGM CSP Payloads — Hexnode UEM Custom Configuration Builder</title>
+  <title>RGM CSP Payloads — Windows 11 Custom Configuration Builder</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
@@ -27,14 +27,14 @@
         </div>
         <div class="truncate">
           <h1 class="text-base sm:text-lg font-bold text-slate-900 truncate">RGM CSP Payloads</h1>
-          <p class="text-[11px] text-slate-500 hidden sm:block">Built exclusively for Hexnode UEM Windows 11 Custom Configurations</p>
+          <p class="text-[11px] text-slate-500 hidden sm:block">Build to exclusively for windows 11 Custom Configurations</p>
         </div>
       </div>
 
-      <!-- Platform Badge: Hexnode UEM -->
+      <!-- Platform Badge -->
       <div class="flex items-center gap-2 shrink-0">
         <span class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-          Hexnode UEM &bull; Windows 11 CSP
+          Windows 11 CSP
         </span>
       </div>
     </div>
@@ -51,7 +51,7 @@
             <h2 class="text-base font-bold text-slate-900">140 Ready-to-Deploy Windows 11 CSP Payloads</h2>
             <span id="catalogCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">140 Payloads Available</span>
           </div>
-          <p class="text-xs text-slate-500 mt-0.5">Search by area or setting name and click <strong>+ Add</strong> to add directly to your Hexnode policy.</p>
+          <p class="text-xs text-slate-500 mt-0.5">Search by area or setting name and click <strong>+ Add</strong> to add directly to your policy.</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="addAllFilteredToProfile()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition">
@@ -87,10 +87,11 @@
             <thead class="bg-slate-100 text-slate-700 font-semibold sticky top-0 z-10 border-b border-slate-200">
               <tr>
                 <th class="py-2.5 px-3">Core Area</th>
-                <th class="py-2.5 px-3">Name*</th>
+                <th class="py-2.5 px-3">Name* &amp; Policy Description</th>
                 <th class="py-2.5 px-3">OMA-URI*</th>
                 <th class="py-2.5 px-3">Data Type*</th>
                 <th class="py-2.5 px-3">Default Value*</th>
+                <th class="py-2.5 px-3">Allowed Values &amp; Notes</th>
                 <th class="py-2.5 px-3 text-right">Actions</th>
               </tr>
             </thead>
@@ -113,10 +114,10 @@
         <!-- Output View Tabs -->
         <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs">
           <button id="viewTabCards" onclick="setOutputView('cards')" class="px-2.5 py-1 rounded-lg font-semibold bg-white text-slate-900 shadow-sm">
-            Hexnode 4-Field Table
+            4-Field Table
           </button>
           <button id="viewTabSyncml" onclick="setOutputView('syncml')" class="px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900">
-            Hexnode SyncML XML
+            SyncML XML
           </button>
           <button id="viewTabJson" onclick="setOutputView('json')" class="px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900">
             JSON Payload
@@ -126,8 +127,8 @@
 
       <!-- Profile Name Input -->
       <div class="flex flex-col sm:flex-row sm:items-center gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-        <label for="profileNameInput" class="text-xs font-semibold text-slate-700 whitespace-nowrap">Hexnode Policy Name:</label>
-        <input id="profileNameInput" type="text" value="Hexnode-Win11-CSP-Policy" oninput="onProfileNameChange()" placeholder="e.g., Hexnode-Win11-CSP-Policy" class="w-full px-3 py-1.5 rounded-lg text-xs mono bg-white border border-slate-300 focus:border-blue-600 focus:outline-none" />
+        <label for="profileNameInput" class="text-xs font-semibold text-slate-700 whitespace-nowrap">Policy Name:</label>
+        <input id="profileNameInput" type="text" value="Win11-CSP-Policy" oninput="onProfileNameChange()" placeholder="e.g., Win11-CSP-Policy" class="w-full px-3 py-1.5 rounded-lg text-xs mono bg-white border border-slate-300 focus:border-blue-600 focus:outline-none" />
       </div>
 
       <!-- View 1: Simple 4-Field Inline Editable Table / Cards -->
@@ -138,7 +139,7 @@
       <!-- View 2 & 3: Code Output (SyncML XML or JSON) -->
       <div id="outputCodeView" class="hidden space-y-3">
         <div class="flex items-center justify-between">
-          <span id="codeViewLabel" class="text-xs font-semibold text-slate-600">Hexnode OMA-DM SyncML Payload</span>
+          <span id="codeViewLabel" class="text-xs font-semibold text-slate-600">OMA-DM SyncML Payload</span>
           <button onclick="copyCodeOutput()" class="px-3 py-1 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white">
             Copy Code
           </button>
@@ -159,7 +160,7 @@
             Export CSV
           </button>
           <button id="primaryExportBtn" onclick="downloadPrimaryArtifact()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition">
-            Download Hexnode SyncML XML
+            Download SyncML XML
           </button>
         </div>
       </div>
@@ -327,9 +328,9 @@
     ];
 
     // =========================================================================
-    // 2. HEXNODE UEM DATA TYPE OPTIONS & STATE
+    // 2. UEM DATA TYPE OPTIONS & STATE
     // =========================================================================
-    const HEXNODE_DATA_TYPES = [
+    const DATA_TYPES = [
       'String',
       'Integer',
       'Boolean',
@@ -343,13 +344,13 @@
     let profileItems = [];
 
     // =========================================================================
-    // 3. INITIALIZATION & HEXNODE CONFIGURATION
+    // 3. INITIALIZATION & CONFIGURATION
     // =========================================================================
     function init() {
       try {
-        const saved = JSON.parse(localStorage.getItem('rgm_hexnode_csp_v1'));
+        const saved = JSON.parse(localStorage.getItem('rgm_csp_v1'));
         if (saved && Array.isArray(saved)) profileItems = saved;
-        const savedName = localStorage.getItem('rgm_hexnode_csp_profile_name');
+        const savedName = localStorage.getItem('rgm_csp_profile_name');
         if (savedName) document.getElementById('profileNameInput').value = savedName;
       } catch (e) {}
 
@@ -360,18 +361,18 @@
 
     function onProfileNameChange() {
       try {
-        localStorage.setItem('rgm_hexnode_csp_profile_name', document.getElementById('profileNameInput').value);
+        localStorage.setItem('rgm_csp_profile_name', document.getElementById('profileNameInput').value);
       } catch (e) {}
       if (outputView !== 'cards') renderProfile();
     }
 
     function saveToStorage() {
       try {
-        localStorage.setItem('rgm_hexnode_csp_v1', JSON.stringify(profileItems));
+        localStorage.setItem('rgm_csp_v1', JSON.stringify(profileItems));
       } catch (e) {}
     }
 
-    function normalizeHexnodeDataType(dt) {
+    function normalizeDataType(dt) {
       if (dt === 'String (XML file)') return 'XML';
       if (dt === 'Base64 (file)') return 'Base64';
       return dt;
@@ -412,27 +413,50 @@
       const tbody = document.getElementById('catalogTableBody');
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">No matching CSP payloads found. Try clearing your search filter.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">No matching CSP payloads found. Try clearing your search filter.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = filtered.map(item => {
         const realIdx = CSP_LIBRARY.indexOf(item);
+        const summary = getPolicySummary(item);
         return `
-          <tr class="hover:bg-slate-50 transition">
-            <td class="py-2 px-3 font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.area)}</td>
-            <td class="py-2 px-3 font-medium text-blue-700 whitespace-nowrap" title="${escapeHtml(item.description)}">${escapeHtml(item.name)}</td>
-            <td class="py-2 px-3 mono text-[11px] text-slate-600 max-w-xs truncate" title="${escapeHtml(item.omaUri)}">${escapeHtml(item.omaUri)}</td>
-            <td class="py-2 px-3 whitespace-nowrap">
+          <tr class="hover:bg-slate-50 transition align-top">
+            <td class="py-2.5 px-3 font-semibold text-slate-800 whitespace-nowrap">${escapeHtml(item.area)}</td>
+            <td class="py-2.5 px-3 min-w-[220px] max-w-xs">
+              <div class="font-semibold text-blue-700">${escapeHtml(item.name)}</div>
+              <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">${escapeHtml(summary)}</p>
+            </td>
+            <td class="py-2.5 px-3 mono text-[11px] text-slate-600 max-w-xs truncate" title="${escapeHtml(item.omaUri)}">${escapeHtml(item.omaUri)}</td>
+            <td class="py-2.5 px-3 whitespace-nowrap">
               <span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700">${escapeHtml(item.dataType)}</span>
             </td>
-            <td class="py-2 px-3 mono text-[11px] text-slate-800 max-w-[180px] truncate" title="${escapeHtml(item.value)}">${escapeHtml(item.value)}</td>
-            <td class="py-2 px-3 text-right whitespace-nowrap space-x-1">
+            <td class="py-2.5 px-3 mono text-[11px] text-slate-800 max-w-[160px] truncate" title="${escapeHtml(item.value)}">${escapeHtml(item.value)}</td>
+            <td class="py-2.5 px-3 text-[11px] text-slate-600 min-w-[200px] max-w-xs leading-snug">${escapeHtml(item.description)}</td>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap space-x-1">
               <button type="button" onclick="quickAddFromCatalog(${realIdx})" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white transition">+ Add</button>
             </td>
           </tr>
         `;
       }).join('');
+    }
+
+    function getPolicySummary(item) {
+      const cleaned = item.description
+        .replace(/^(0\s*=[^;]+;\s*1\s*=|1\s*=[^;]+;\s*2\s*=|0\s*=[^;]+;\s*2\s*=)/i, '')
+        .trim();
+      const words = item.name
+        .replace(/^.*_/, '')
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/\bAad\b/g, 'Entra ID')
+        .replace(/\bMsa\b/g, 'Microsoft Account')
+        .replace(/\bDma\b/g, 'DMA')
+        .replace(/\bUsb\b/g, 'USB')
+        .replace(/\bFips\b/g, 'FIPS')
+        .replace(/\bPua\b/g, 'PUA')
+        .replace(/\bVbs\b/g, 'VBS')
+        .replace(/\bMcp\b/g, 'MCP');
+      return `${words} (${item.area} policy).`;
     }
 
     function quickAddFromCatalog(idx) {
@@ -444,8 +468,10 @@
         id: existingIdx >= 0 ? profileItems[existingIdx].id : Date.now() + Math.random(),
         name: item.name,
         omaUri: item.omaUri,
-        dataType: normalizeHexnodeDataType(item.dataType),
-        value: item.value
+        dataType: normalizeDataType(item.dataType),
+        value: item.value,
+        description: item.description,
+        summary: getPolicySummary(item)
       };
 
       if (existingIdx >= 0) {
@@ -456,7 +482,7 @@
 
       saveToStorage();
       renderProfile();
-      showToast(`Added "${item.name}" to Hexnode policy`);
+      showToast(`Added "${item.name}" to policy`);
     }
 
     function addAllFilteredToProfile() {
@@ -471,8 +497,9 @@
             id: Date.now() + Math.random(),
             name: item.name,
             omaUri: item.omaUri,
-            dataType: normalizeHexnodeDataType(item.dataType),
-            value: item.value
+            dataType: normalizeDataType(item.dataType),
+            value: item.value,
+            description: item.description
           });
           addedCount++;
         }
@@ -480,11 +507,11 @@
 
       saveToStorage();
       renderProfile();
-      showToast(addedCount > 0 ? `Added ${addedCount} CSP settings to Hexnode policy` : 'All filtered settings are already in your Hexnode policy');
+      showToast(addedCount > 0 ? `Added ${addedCount} CSP settings to policy` : 'All filtered settings are already in your policy');
     }
 
     // =========================================================================
-    // 5. OUTPUT RENDERING (HEXNODE 4-FIELD CARDS, SYNCML XML, JSON, CSV)
+    // 5. OUTPUT RENDERING (4-FIELD CARDS, SYNCML XML, JSON, CSV)
     // =========================================================================
     function setOutputView(view) {
       outputView = view;
@@ -521,18 +548,24 @@
       if (profileItems.length === 0) {
         cardsDiv.innerHTML = `
           <div class="rounded-xl border border-dashed border-slate-300 p-8 text-center space-y-2">
-            <p class="text-sm font-semibold text-slate-700">No Hexnode CSP settings added yet</p>
-            <p class="text-xs text-slate-500">Click <strong>+ Add</strong> on any of the 140 CSP payloads above to start building your Hexnode UEM policy.</p>
+            <p class="text-sm font-semibold text-slate-700">No CSP settings added yet</p>
+            <p class="text-xs text-slate-500">Click <strong>+ Add</strong> on any of the 140 CSP payloads above to start building your policy.</p>
           </div>
         `;
       } else {
         cardsDiv.innerHTML = profileItems.map((item, idx) => {
-          const displayType = normalizeHexnodeDataType(item.dataType);
+          const displayType = normalizeDataType(item.dataType);
+          const libMatch = CSP_LIBRARY.find(c => c.omaUri.toLowerCase() === item.omaUri.toLowerCase());
+          const notesText = item.description || (libMatch ? libMatch.description : '');
+          const summaryText = item.summary || (libMatch ? getPolicySummary(libMatch) : '');
           return `
             <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4 space-y-2.5 text-xs">
-              <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                <span class="font-bold text-slate-800">#${idx + 1} &bull; ${escapeHtml(item.name)}</span>
-                <div class="flex items-center gap-2">
+              <div class="flex items-start justify-between gap-3 border-b border-slate-200/80 pb-2">
+                <div>
+                  <span class="font-bold text-slate-800">#${idx + 1} &bull; ${escapeHtml(item.name)}</span>
+                  ${summaryText ? `<p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(summaryText)}</p>` : ''}
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
                   <button type="button" onclick="removeItem(${item.id})" class="text-rose-600 hover:underline font-medium">Remove</button>
                 </div>
               </div>
@@ -557,11 +590,14 @@
                   <button type="button" onclick="copyText('${escapeJs(displayType)}', 'Data Type copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
                 </div>
               </div>
-              <div class="grid grid-cols-12 gap-2 items-center">
-                <span class="col-span-3 font-medium text-slate-500">Value*</span>
-                <div class="col-span-9 flex items-center gap-2">
-                  <input type="text" value="${escapeHtml(item.value)}" onchange="updateItemValue(${item.id}, this.value)" class="w-full mono text-[11px] bg-white px-2.5 py-1.5 rounded-lg border border-slate-300 focus:border-blue-600 focus:outline-none" />
-                  <button type="button" onclick="copyText('${escapeJs(item.value)}', 'Value copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
+              <div class="grid grid-cols-12 gap-2 items-start">
+                <span class="col-span-3 font-medium text-slate-500 pt-1.5">Value*</span>
+                <div class="col-span-9 space-y-1.5">
+                  <div class="flex items-center gap-2">
+                    <input type="text" value="${escapeHtml(item.value)}" onchange="updateItemValue(${item.id}, this.value)" class="w-full mono text-[11px] bg-white px-2.5 py-1.5 rounded-lg border border-slate-300 focus:border-blue-600 focus:outline-none" />
+                    <button type="button" onclick="copyText('${escapeJs(item.value)}', 'Value copied')" class="text-[11px] text-blue-600 hover:underline shrink-0">Copy</button>
+                  </div>
+                  ${notesText ? `<div class="px-2.5 py-1.5 rounded-lg bg-amber-50/90 border border-amber-200/80 text-[11px] text-amber-900"><span class="font-semibold">Allowed Values:</span> ${escapeHtml(notesText)}</div>` : ''}
                 </div>
               </div>
             </div>
@@ -570,11 +606,11 @@
       }
 
       if (outputView === 'syncml') {
-        document.getElementById('codeViewLabel').textContent = 'Hexnode UEM — OMA-DM SyncML XML Payload';
+        document.getElementById('codeViewLabel').textContent = 'OMA-DM SyncML XML Payload';
         document.getElementById('codeOutputPre').textContent = generateSyncMlXml();
       } else if (outputView === 'json') {
-        document.getElementById('codeViewLabel').textContent = 'Hexnode UEM — Custom Configuration JSON Payload';
-        document.getElementById('codeOutputPre').textContent = generateHexnodeJson();
+        document.getElementById('codeViewLabel').textContent = 'Custom Configuration JSON Payload';
+        document.getElementById('codeOutputPre').textContent = generateJsonPayload();
       }
     }
 
@@ -597,38 +633,29 @@
       profileItems = [];
       saveToStorage();
       renderProfile();
-      showToast('Hexnode policy cleared');
+      showToast('Policy cleared');
     }
 
     function generateSyncMlXml() {
-      if (profileItems.length === 0) return '<!-- Add at least one OMA-URI setting to generate Hexnode SyncML XML -->';
+      if (profileItems.length === 0) return '<!-- Add at least one OMA-URI setting to generate SyncML XML -->';
       const itemsXml = profileItems.map((item, i) => {
-        const dt = item.dataType.toLowerCase();
-        const fmt = dt.includes('int') ? 'int'
-          : dt.includes('float') ? 'float'
-          : dt.includes('bool') ? 'bool'
-          : dt.includes('date') ? 'date'
-          : dt.includes('xml') ? 'xml'
-          : dt.includes('base64') ? 'b64'
-          : 'chr';
-
-        return `        <Replace>\n          <CmdID>${i + 2}</CmdID>\n          <Meta>\n            <Format xmlns="syncml:metinf">${fmt}</Format>\n          </Meta>\n          <Item>\n            <Target>\n              <LocURI>${escapeXml(item.omaUri)}</LocURI>\n            </Target>\n            <Data>${escapeXml(item.value)}</Data>\n          </Item>\n        </Replace>`;
+        const dt = normalizeDataType(item.dataType);
+        const fmt = dt === 'Integer' ? 'int' : dt === 'Boolean' ? 'bool' : dt === 'Base64' ? 'b64' : dt === 'XML' ? 'xml' : 'chr';
+        return `  <Replace>\n    <CmdID>${i + 1}</CmdID>\n    <Item>\n      <Target>\n        <LocURI>${escapeXml(item.omaUri)}</LocURI>\n      </Target>\n      <Meta>\n        <Format xmlns="syncml:metinf">${fmt}</Format>\n      </Meta>\n      <Data>${escapeXml(item.value)}</Data>\n    </Item>\n  </Replace>`;
       }).join('\n');
-
-      return `<SyncML xmlns="SYNCML:SYNCML1.2">\n  <SyncBody>\n    <Atomic>\n      <CmdID>1</CmdID>\n${itemsXml}\n    </Atomic>\n    <Final/>\n  </SyncBody>\n</SyncML>`;
+      return `<Atomic>\n${itemsXml}\n</Atomic>`;
     }
 
-    function generateHexnodeJson() {
-      const policyName = (document.getElementById('profileNameInput')?.value || 'Hexnode-Win11-CSP-Policy').trim() || 'Hexnode-Win11-CSP-Policy';
+    function generateJsonPayload() {
+      const policyName = (document.getElementById('profileNameInput')?.value || 'Win11-CSP-Policy').trim() || 'Win11-CSP-Policy';
       const payload = {
         platform: 'Windows',
-        mdm: 'Hexnode UEM',
         policyName: policyName,
         generator: 'RGM CSP Payloads',
         customConfigurations: profileItems.map(item => ({
           name: item.name,
           omaUri: item.omaUri,
-          dataType: normalizeHexnodeDataType(item.dataType),
+          dataType: normalizeDataType(item.dataType),
           value: item.value
         }))
       };
@@ -641,12 +668,12 @@
         return;
       }
       if (outputView === 'syncml') {
-        copyText(generateSyncMlXml(), 'Hexnode SyncML XML copied!');
+        copyText(generateSyncMlXml(), 'SyncML XML copied!');
       } else if (outputView === 'json') {
-        copyText(generateHexnodeJson(), 'Hexnode JSON copied!');
+        copyText(generateJsonPayload(), 'JSON copied!');
       } else {
-        const lines = profileItems.map(i => `Name: ${i.name}\nOMA-URI: ${i.omaUri}\nData Type: ${normalizeHexnodeDataType(i.dataType)}\nValue: ${i.value}`).join('\n---\n');
-        copyText(lines, 'Hexnode 4-Field table copied!');
+        const lines = profileItems.map(i => `Name: ${i.name}\nOMA-URI: ${i.omaUri}\nData Type: ${normalizeDataType(i.dataType)}\nValue: ${i.value}`).join('\n---\n');
+        copyText(lines, '4-Field table copied!');
       }
     }
 
@@ -663,13 +690,13 @@
       const headers = ['Name*', 'OMA-URI*', 'Data Type*', 'Value*'];
 
       const rows = profileItems.map(item => {
-        const dt = normalizeHexnodeDataType(item.dataType);
+        const dt = normalizeDataType(item.dataType);
         const cols = [item.name, item.omaUri, dt, item.value];
         return cols.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
       });
 
       const csv = [headers.join(','), ...rows].join('\n');
-      triggerDownload(csv, 'rgm-hexnode-csp-payloads.csv', 'text/csv;charset=utf-8;');
+      triggerDownload(csv, 'rgm-csp-payloads.csv', 'text/csv;charset=utf-8;');
     }
 
     function downloadPrimaryArtifact() {
@@ -677,7 +704,7 @@
         showToast('Add at least one setting before exporting');
         return;
       }
-      triggerDownload(generateSyncMlXml(), 'rgm-hexnode-csp-syncml.xml', 'application/xml');
+      triggerDownload(generateSyncMlXml(), 'rgm-csp-syncml.xml', 'application/xml');
     }
 
     function triggerDownload(content, filename, mimeType) {
